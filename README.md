@@ -24,7 +24,20 @@ You can download the Azure Storage Emulator from the following URL: https://azur
 
 ## Setting up the environment:
 
-`npm install`
+Run `npm install`
+
+Add a file called local.settings.json in the main folder. Paste the following inside it:
+
+```JSON
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "StorageConnectionString": "UseDevelopmentStorage=true"
+  }
+}
+```
 
 ## Run the Project
 
