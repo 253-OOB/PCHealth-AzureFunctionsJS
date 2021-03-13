@@ -1,0 +1,20 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "post"
+      ]
+    },
+    {
+      "tableName": "PCHealthBasicData",
+      "connection": "StorageConnectionString",
+      "name": "tableBinding",
+      "type": "table",
+      "direction": "out"
+    }
+  ]
+}
