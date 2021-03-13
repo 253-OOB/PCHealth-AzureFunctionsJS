@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to login",
+      "type": "node",
+      "request": "attach",
+      "port": 9222,
+      "preLaunchTask": "func: host start --port 7072"
+    }
+  ]
+}

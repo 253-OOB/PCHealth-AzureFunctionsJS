@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "leafdata"
+		},
+		{
+			"path": "login"
+		},
+		{
+			"path": "webapp"
+		}
+	],
+	"settings": {
+		"debug.internalConsoleOptions": "neverOpen"
+	},
+	"launch": {
+		"configurations": [],
+		"compounds": [
+			{
+				"name": "Launch All Functions",
+				"configurations": [
+					"Attach to leafdata",
+					"Attach to login",
+					"Attach to webapp"
+				]
+			}
+		]
+	}
+}
