@@ -15,7 +15,9 @@ module.exports = async function (context, req) {
     const refreshToken = req.body.refreshToken;
 
     if( refreshToken == null ) {
+
         context.res.status = 401;
+    
     } else {
 
         const refreshTokenExists = await verifyRefreshToken( refreshToken );
