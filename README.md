@@ -26,7 +26,7 @@ You can download the Azure Storage Explorer from the following URL: https://azur
 
 ### Install Dependencies:
 
-Run `npm install -g recursive install`
+Run `npm install -g recursive-install`
 
 Run `npm-recursive-install` (At the root directory)
 
@@ -67,5 +67,5 @@ Start the application: `func host start`
 
 ### Run all tests:
 
-1. Change directory to root
+1. Change directory to root.
 2. Run `npm test`
