@@ -4,11 +4,15 @@
 			"path": "leafdata"
 		},
 		{
-			"path": "login"
+			"path": "AuthenticationService"
+		},
+		{
+			"path": "LoginService"
 		},
 		{
 			"path": "webapp"
 		}
+		
 	],
 	"settings": {
 		"debug.internalConsoleOptions": "neverOpen"
@@ -20,7 +24,8 @@
 				"name": "Launch All Functions",
 				"configurations": [
 					"Attach to leafdata",
-					"Attach to login",
+					"Attach to AuthenticationService",
+					"Attach to LoginService",
 					"Attach to webapp"
 				]
 			}

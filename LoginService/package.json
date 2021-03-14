@@ -1,0 +1,13 @@
+{
+  "name": "loginservice",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "node-fetch": "^2.6.1"
+  }
+}
