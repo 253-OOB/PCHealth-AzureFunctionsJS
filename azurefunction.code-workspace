@@ -1,7 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "leafdata"
+			"path": "LeafService"
 		},
 		{
 			"path": "AuthenticationService"
@@ -10,7 +10,7 @@
 			"path": "LoginService"
 		},
 		{
-			"path": "webapp"
+			"path": "WebApp Service"
 		}
 		
 	],
@@ -23,10 +23,10 @@
 			{
 				"name": "Launch All Functions",
 				"configurations": [
-					"Attach to leafdata",
+					"Attach to LeafService",
 					"Attach to AuthenticationService",
 					"Attach to LoginService",
-					"Attach to webapp"
+					"Attach to WebAppService"
 				]
 			}
 		]

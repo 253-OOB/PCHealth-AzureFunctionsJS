@@ -1,10 +1,8 @@
 
 const sql = require("mssql");
-const dotenv = require("dotenv").config({path: "../.env"}); // CHANGE THIS AGAIN
+const dotenv = require("dotenv").config();
 const bcrypt = require("bcrypt");
 const fetch = require("node-fetch");
-const { resolve } = require("path");
-const { verify } = require("crypto");
 
 const SQL_SERVER=process.env.SQL_SERVER;
 const SQL_USER=process.env.SQL_USER;
@@ -14,19 +12,13 @@ const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
 
 module.exports = async function (context, req) {
 
-    // Verify access token: if correct return page
-
-    const isAccessTokenAvailable = await verifyAccessToken(context);
+    const isAccessTokenAvailable = await verifyAccessToken(req);
 
     if( isAccessTokenAvailable == 204 ) {
 
-        // redirect to website.
+        // TODO: redirect to website.
 
     } else {
-
-
-        // else verify Refresh token, if correct return page
-        // else verify password
 
         const config = {
             server: SQL_SERVER,
@@ -45,27 +37,25 @@ module.exports = async function (context, req) {
         try {
 
             if ("Email" in req.query) {
-
+                
                 const pool = await sql.connect(config);
 
                 const request = pool.request();
-                
-                sql_response = await request
-                    .input('Email', sql.NVarChar, re.query["Email"])
-                    .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organizations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
+
+                sql_response = await request.input('Email', sql.NVarChar, req.query["Email"])
+                                            .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organizations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
 
                 pool.close();
 
-            } else if( "Username" in req.query && "Organisation" in req.query ) {
+            } else if ("Username" in req.query && "Organisation" in req.query) {
 
                 const pool = await sql.connect(config);
 
                 const request = pool.request();
                 
-                sql_response = await request
-                    .input("Organization", sql.NVarChar, req.query["Organization"])
-                    .input("Username", sql.NVarChar, req.query["Username"])
-                    .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organizations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
+                sql_response = await request.input("Organization", sql.NVarChar, req.query["Organization"])
+                                            .input("Username", sql.NVarChar, req.query["Username"])
+                                            .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organizations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
 
                 pool.close();
 
@@ -77,18 +67,20 @@ module.exports = async function (context, req) {
 
         } catch (err) {
 
-            // Return to the user that authentication failed.
             context.log(err);
-            return;
-
+            
         }
 
         if (sql_response === undefined) {
 
-            // return to the user email or password is incorrect
-
+            context.res.status = 500;
+                            
+        } else if (sql_response.rows.length() == 0) {
+        
+            context.res.status = 403;
+        
         } else {
-
+        
             const isCorrectCredentials = bcrypt.compare(req.body.password, sql_response.rows[0].Password);
             
             if ( isCorrectCredentials === true ) {
@@ -105,17 +97,17 @@ module.exports = async function (context, req) {
 
 }
 
-async function verifyAccessToken( context ) {
+async function verifyAccessToken( req ) {
 
     const status = async () => {
         
         try {
 
             const verToken = await fetch ( 
-                process.env.AUTH_URL, 
+                process.env.AUTH_URL + "fVerifyToken", 
                 {
                     method: "POST",
-                    Headers: context.headers
+                    headers: req.headers
                 }
             )
 
@@ -135,6 +127,32 @@ async function verifyAccessToken( context ) {
 
 }
 
-async function verifyAccessToken( context )
+async function generateAccessToken( req ) {
+
+    const resp = async () => {
+        
+        try {
+
+            const genToken = await fetch ( 
+                process.env.AUTH_UR + "fGenerateAccessToken", 
+                {
+                    method: "POST",
+                    headers: req.headers
+                }
+            )
+
+            const status_code = await verToken.status;
+            const 
+            return status_code;
+
+        } catch (err) {
+
+            console.log(err);
+
+        }
+
+    }
+
+}
 
 
