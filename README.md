@@ -59,6 +59,13 @@ Start the application: `func host start`
 
 ### Start all function at the same time:
 
-1 - Press the debug button in VSCode.
-2 - Press the dropdown at the top, and select `Launch All Functions`
-3 - Press the run button
+1. Press the debug button in VSCode.
+2. Press the dropdown at the top, and select `Launch All Functions`
+3. Press the run button
+
+## Run Tests
+
+### Run all tests:
+
+1. Change directory to root
+2. Run `npm test`
