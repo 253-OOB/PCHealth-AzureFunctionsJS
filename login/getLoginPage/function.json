@@ -8,7 +8,7 @@
       "methods": [
         "get"
       ],
-      "route": "getLoginPage/{filename}"
+      "route": "getLoginPage/{filename=index.html}"
     },
     {
       "name": "inputBlob",
