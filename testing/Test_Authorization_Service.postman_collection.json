@@ -1,0 +1,184 @@
+{
+	"info": {
+		"_postman_id": "8b839dd2-9832-43be-bd06-95a841938dc9",
+		"name": "Test Authorization Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "fGenerateRefreshToken -- Correct Body -- Correct Method (POST)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{ \"payload\": \"test\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7072/api/fGenerateRefreshToken",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7072",
+					"path": [
+						"api",
+						"fGenerateRefreshToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fGenerateRefreshToken -- No JSON -- Correct Method (POST)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 500\", function () {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7072/api/fGenerateRefreshToken",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7072",
+					"path": [
+						"api",
+						"fGenerateRefreshToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fGenerateRefreshToken -- Payload Attribute Missing -- Correct Method (POST)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 500\", function () {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"test\": \"test\",\r\n    \"test1\": \"test1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7072/api/fGenerateRefreshToken",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7072",
+					"path": [
+						"api",
+						"fGenerateRefreshToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fGenerateRefreshToken -- Correct Body -- Incorrect Method (GET)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{ \"payload\": \"test\" }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7072/api/fGenerateRefreshToken",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7072",
+					"path": [
+						"api",
+						"fGenerateRefreshToken"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

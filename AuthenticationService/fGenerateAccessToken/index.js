@@ -8,10 +8,10 @@ const SQL_PASS=process.env.SQL_PASS;
 const SQL_DATABASE=process.env.SQL_DATABASE;
 const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
 
-// TODO Migrate from Symmetric to Assymetric Key (Public Private) (https://siddharthac6.medium.com/json-web-token-jwt-the-right-way-of-implementing-with-node-js-65b8915d550e)
+// TODO: (Issue #2) Migrate from Symmetric to Asymmetric Key (Public Private) (https://siddharthac6.medium.com/json-web-token-jwt-the-right-way-of-implementing-with-node-js-65b8915d550e)
 
 module.exports = async function (context, req) {
-  
+
     const refreshToken = req.body.refreshToken;
 
     if( refreshToken == null ) {

@@ -1,6 +1,6 @@
 
 
-// TODO: Refactor Access Token verification into a single function.
+// TODO: (Issue #2) Refactor Access Token verification into a single function.
 
 const sql = require("mssql");
 const dotenv = require("dotenv").config();
@@ -14,8 +14,6 @@ const SQL_DATABASE=process.env.SQL_DATABASE;
 const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
 
 module.exports = async function (context, req) {
-
-    // TODO verify if the user already has an access token, if he does return 200 with the access token. ??
 
     const signInInfo = await getSignInInfo( req );
 
@@ -265,7 +263,7 @@ async function generateAccessToken( req ) {
 
 }
 
-// TODO: Convert this function to use the Public key of the JWT token to verify the signature.
+// TODO: (Issue #2)Convert this function to use the Public key of the JWT token to verify the signature.
 
 async function verifyAccessToken( req ) {
 

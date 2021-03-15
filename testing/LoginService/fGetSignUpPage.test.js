@@ -1,8 +1,7 @@
 
-const httpFunction = require('../../login/getSignUpPage/index');
 const context = require('../defaultContext');
 
-test("test", async () => {
+test("Default Test", async () => {
 
     expect(1).toEqual( 1 );
 
