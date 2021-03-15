@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "8b839dd2-9832-43be-bd06-95a841938dc9",
-		"name": "Test Authorization Service",
+		"_postman_id": "e30d9a55-eef4-48d5-b518-8a1b3e9edc51",
+		"name": "Authorization Service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -158,7 +158,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n{ \"payload\": \"test\" }",
+					"raw": "\r\n{ \"payload\": \"test1\" }",
 					"options": {
 						"raw": {
 							"language": "json"
