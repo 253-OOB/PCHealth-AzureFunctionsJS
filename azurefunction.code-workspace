@@ -1,14 +1,18 @@
 {
 	"folders": [
 		{
-			"path": "leafdata"
+			"path": "LeafService"
 		},
 		{
-			"path": "login"
+			"path": "AuthenticationService"
 		},
 		{
-			"path": "webapp"
+			"path": "LoginService"
+		},
+		{
+			"path": "WebAppService"
 		}
+		
 	],
 	"settings": {
 		"debug.internalConsoleOptions": "neverOpen"
@@ -19,9 +23,10 @@
 			{
 				"name": "Launch All Functions",
 				"configurations": [
-					"Attach to leafdata",
-					"Attach to login",
-					"Attach to webapp"
+					"Attach to LeafService",
+					"Attach to AuthenticationService",
+					"Attach to LoginService",
+					"Attach to WebAppService"
 				]
 			}
 		]

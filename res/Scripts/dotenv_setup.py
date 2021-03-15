@@ -1,0 +1,1 @@
+# TODO: Make a script to automatically update the .env file of each directory based on the existing values in .env_sample
