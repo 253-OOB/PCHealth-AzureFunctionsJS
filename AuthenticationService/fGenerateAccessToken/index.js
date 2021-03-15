@@ -26,9 +26,9 @@ module.exports = async function (context, req) {
 
             try {
             
-                const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+                const verToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
                 
-                const accessToken = jwt.sign( {user: payload.user}, process.env.ACCESS_TOKEN_SECRET );
+                const accessToken = jwt.sign( {payload: verToken.payload}, process.env.ACCESS_TOKEN_SECRET );
 
                 context.res = {
                     status: 200,
@@ -38,14 +38,20 @@ module.exports = async function (context, req) {
                 };
             
             } catch (err) {
+
                 context.res.status = 403;
+
             } 
         
 
         } else if (refreshTokenExists == -1) {
-            context.resp.status = 403
+
+            context.resp.status = 403;
+
         } else if (refreshTokenExists == -2) {
+
             context.resp.status = 500;
+        
         } 
 
     }
