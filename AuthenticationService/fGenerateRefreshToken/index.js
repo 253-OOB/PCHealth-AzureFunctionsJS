@@ -1,11 +1,8 @@
 
-// TODO: Make POST only
 
 const jwt = require("jsonwebtoken");
 
 module.exports = async function (context, req) {
-
-    // context.log(req)
 
     try {
 
@@ -30,7 +27,7 @@ module.exports = async function (context, req) {
 
     } catch (err) {
 
-        // TODO: this error should not always be 500.
+        // TODO: (Issue #3) this error should not always be 500.
 
         console.error(err);
         context.res.status = 500;

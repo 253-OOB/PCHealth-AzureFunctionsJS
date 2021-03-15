@@ -1,6 +1,6 @@
 
 
-// TODO: Refactor Access Token verification into a single function.
+// TODO: (Issue #2) Refactor Access Token verification into a single function.
 
 const sql = require("mssql");
 const dotenv = require("dotenv").config();
@@ -263,7 +263,7 @@ async function generateAccessToken( req ) {
 
 }
 
-// TODO: Convert this function to use the Public key of the JWT token to verify the signature.
+// TODO: (Issue #2)Convert this function to use the Public key of the JWT token to verify the signature.
 
 async function verifyAccessToken( req ) {
 
