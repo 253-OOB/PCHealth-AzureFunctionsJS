@@ -15,8 +15,6 @@ const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
 
 module.exports = async function (context, req) {
 
-    // TODO verify if the user already has an access token, if he does return 200 with the access token. ??
-
     const signInInfo = await getSignInInfo( req );
 
     if ( signInInfo.status == 200 ) {
