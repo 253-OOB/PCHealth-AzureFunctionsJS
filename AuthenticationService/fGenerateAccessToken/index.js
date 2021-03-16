@@ -2,22 +2,27 @@
 const sql = require('mssql');
 const jwt = require('jsonwebtoken');
 
-const SQL_SERVER=process.env.SQL_SERVER;
-const SQL_USER=process.env.SQL_USER;
-const SQL_PASS=process.env.SQL_PASS;
-const SQL_DATABASE=process.env.SQL_DATABASE;
-const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
+// const dotenenv = require('dotenv').login();
+const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing
 
 // TODO: (Issue #2) Migrate from Symmetric to Asymmetric Key (Public Private) (https://siddharthac6.medium.com/json-web-token-jwt-the-right-way-of-implementing-with-node-js-65b8915d550e)
 
 module.exports = async function (context, req) {
 
+    context.res = generateAccessToken(context, req);
+
+}
+
+function generateAccessToken( req ) {
+
+    // TODO: (Issue #16) Add additional checks on content of refresh token.
+
     const refreshToken = req.body.refreshToken;
 
     if( refreshToken == null ) {
 
-        context.res.status = 401;
-    
+        return {status: 401};
+
     } else {
 
         const refreshTokenExists = await verifyRefreshToken( refreshToken );
@@ -30,33 +35,38 @@ module.exports = async function (context, req) {
                 
                 const accessToken = jwt.sign( {payload: verToken.payload}, process.env.ACCESS_TOKEN_SECRET );
 
-                context.res = {
+                return {
                     status: 200,
                     headers: { "Content-Type": "application/json" },
-                    json: { accessToken: accessToken },
-                    isRaw: true
+                    body: JSON.stringify({ accessToken: accessToken })
                 };
             
             } catch (err) {
 
-                context.res.status = 403;
+                return {status: 403};
 
             } 
         
-
         } else if (refreshTokenExists == -1) {
 
-            context.resp.status = 403;
+            return {status: 403};
 
         } else if (refreshTokenExists == -2) {
 
-            context.resp.status = 500;
+            return {status: 500};
         
         } 
 
     }
 
 }
+
+const SQL_SERVER=process.env.SQL_SERVER;
+const SQL_USER=process.env.SQL_USER;
+const SQL_PASS=process.env.SQL_PASS;
+const SQL_DATABASE=process.env.SQL_DATABASE;
+const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
+
 
 async function verifyRefreshToken( refreshToken ) {
 
@@ -92,8 +102,8 @@ async function verifyRefreshToken( refreshToken ) {
 
     } catch (error) {
 
-        context.log("Could not connect to the database.");
-        context.log(err);
+        console.log("Could not connect to the database.");
+        console.log(err);
         return -2;
 
     }
