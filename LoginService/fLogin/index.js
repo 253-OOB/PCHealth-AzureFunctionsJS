@@ -3,9 +3,12 @@
 // TODO: (Issue #2) Refactor Access Token verification into a single function.
 
 const sql = require("mssql");
-const dotenv = require("dotenv").config();
 const bcrypt = require("bcrypt");
 const fetch = require("node-fetch");
+
+// const dotenv = require("dotenv").config();
+const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing only
+
 
 const SQL_SERVER=process.env.SQL_SERVER;
 const SQL_USER=process.env.SQL_USER;
@@ -15,15 +18,21 @@ const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
 
 module.exports = async function (context, req) {
 
+    context.res = await Login( context, req );
+
+}
+
+async function Login( context, req ) {
+
     const signInInfo = await getSignInInfo( req );
 
     if ( signInInfo.status == 200 ) {
 
         const data = signInInfo.sql_resp;
 
-        if ( data.rows.length > 0 ) {
+        if ( data.recordset.length > 0 ) {
 
-            const isCorrectCredentials = bcrypt.compare(req.body.password, data.rows[0].Password);
+            const isCorrectCredentials = bcrypt.compare(req.body.password, data.recordset[0].Password);
 
             if (isCorrectCredentials == true) {
                 
@@ -31,19 +40,19 @@ module.exports = async function (context, req) {
 
                 const getRefreshToken = {
                     status: 200, // Preliminary value in case the token already exists
-                    refreshToken: data.rows[0].RefreshToken
+                    refreshToken: data.recordset[0].RefreshToken
                 };
 
                 if( getRefreshToken.refreshToken == null ) {
 
-                    getRefreshToken = await generateRefreshToken( data.rows[0].Organization + "." + data.rows[0].Username );
+                    getRefreshToken = await generateRefreshToken( data.recordset[0].Organization + "." + data.recordset[0].Username );
 
                 }
 
                 if( getRefreshToken.status == 200 ) {
 
                     // No need to check this statement as it is an insert, and if it is not correctly inputed in the DB then the user will just need to sign in again after the access token expires.
-                    addNewRefreshTokenToDB(data.rows[0].Email, getRefreshToken.RefreshToken);
+                    addNewRefreshTokenToDB(data.recordset[0].Email, getRefreshToken.RefreshToken);
 
                     // Generate an access token
                     const getAccessToken = await generateAccessToken( {headers: getRefreshToken.refreshToken} );
@@ -55,7 +64,7 @@ module.exports = async function (context, req) {
                             refreshToken: getRefreshToken.refreshToken
                         }
 
-                        context.res = {
+                        return {
                             status: 200,
                             headers: { "Content-Type": "application/json" },
                             json: json_body,
@@ -64,7 +73,7 @@ module.exports = async function (context, req) {
 
                     } else {
 
-                        context.res.status = 500;
+                        return {status: 500};
 
                     }
 
@@ -72,23 +81,23 @@ module.exports = async function (context, req) {
 
                 } else {
 
-                    context.res = refreshToken.status;
+                    return { status: refreshToken.status};
 
                 }
 
             } else {
-                context.res.status = 403;
+                return {status: 403};
             }
 
         } else {
 
-            context.res.status = 403;
+            return {status: 403};
 
         }
 
     } else {
 
-        context.res.signInInfo = signInInfo.status;
+        return {status: signInInfo.status};
 
     }
 
@@ -108,53 +117,64 @@ const config = {
 
 async function getSignInInfo( req ) {
 
-    const sql_response = undefined;
+    let sql_response = undefined;
 
     try {
 
-        if ("Email" in req.query) {
-            
-            const pool = await sql.connect(config);
+        if ("query" in req) {
 
-            const request = pool.request();
+            if ("Email" in req.query) {
+                
+                const pool = await sql.connect(config);
 
-            sql_response = await request.input('Email', sql.NVarChar, req.query["Email"])
-                                        .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organizations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
+                const request = pool.request();
 
-            pool.close();
+                // TODO Change Refresh token name in database from Refresh_Token to RefreshToken
 
-        } else if ("Username" in req.query && "Organisation" in req.query) {
 
-            const pool = await sql.connect(config);
+                sql_response = await request.input('Email', sql.NVarChar, req.query["Email"])
+                                            .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
 
-            const request = pool.request();
-            
-            sql_response = await request.input("Organization", sql.NVarChar, req.query["Organization"])
-                                        .input("Username", sql.NVarChar, req.query["Username"])
-                                        .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organizations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
+                pool.close();
 
-            pool.close();
+            } else if ("Username" in req.query && "Organisation" in req.query) {
 
+                const pool = await sql.connect(config);
+
+                const request = pool.request();
+                
+                // TODO Change Refresh token name in database from Refresh_Token to RefreshToken
+
+                sql_response = await request.input("Organisation", sql.NVarChar, req.query["Organisation"])
+                                            .input("Username", sql.NVarChar, req.query["Username"])
+                                            .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
+
+                pool.close();
+
+            } else {
+
+                return {status: 400};
+
+            }
         } else {
 
-            return {status: 403};
+            return {status: 400};
 
         }
 
         console.log("Please verify the content of the sql_response.")
-        console.log(sql_resp);
+        console.log(sql_response);
 
         return {
-            
             status: 200,
             sql_resp: sql_response
-        
         }
 
     } catch (err) {
 
-        console.log(err);
+        // Non-checkable errors are possible, testing will mostly not verify the full extent this catch statement.
 
+        console.log(err);
         return {status: 500};
         
     }
