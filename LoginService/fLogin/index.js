@@ -153,7 +153,7 @@ async function getSignInInfo( req ) {
 
     } catch (err) {
 
-        context.log(err);
+        console.log(err);
 
         return {status: 500};
         
