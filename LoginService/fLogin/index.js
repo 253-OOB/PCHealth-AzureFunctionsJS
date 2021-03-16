@@ -189,9 +189,11 @@ async function addNewRefreshTokenToDB ( email, refreshToken ) {
 
         const request = pool.request();
 
+        // TODO Change Refresh token name in database from Refresh_Token to RefreshToken
+
         sql_response = await request.input("Email", sql.NVarChar, email)
                                     .input("RefreshToken", sql.NVarChar, refreshToken)
-                                    .query("UPDATE dbo.Accounts SET RefreshToken=@RefreshToken WHERE Email=@Email");
+                                    .query("UPDATE dbo.Accounts SET Refresh_Token=@RefreshToken WHERE Email=@Email");
 
         pool.close();
 

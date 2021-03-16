@@ -1,6 +1,13 @@
 const rewire = require("rewire")
 const index = rewire("./index")
 const getSignInInfo = index.__get__("getSignInInfo")
+
+/* TODO: (Issue #14) 
+
+- Add tests for non-string input values in getSignInInfo
+
+*/
+
 // @ponicode
 describe("getSignInInfo", () => {
     test("Existing Username and Organisation", async () => {
