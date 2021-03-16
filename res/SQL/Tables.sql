@@ -1,5 +1,5 @@
 
-CREATE TABLE Organisations (
+CREATE TABLE [PC_Health].[dbo].[Organisations] (
 
 	OrganisationID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	Name varchar(50) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE Organisations (
 
 )
 
-CREATE TABLE Accounts (
+CREATE TABLE [PC_Health].[dbo].[Accounts] (
 
 	ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	Email varchar(50) NOT NULL UNIQUE,
