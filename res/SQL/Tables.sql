@@ -1,4 +1,11 @@
 
+DROP TABLE [PC_Health].[dbo].[Accounts]
+GO
+
+DROP TABLE [PC_Health].[dbo].[Organisations]
+GO
+
+
 CREATE TABLE [PC_Health].[dbo].[Organisations] (
 
 	OrganisationID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
