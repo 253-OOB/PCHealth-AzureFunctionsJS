@@ -1,6 +1,30 @@
 
 
-// TODO: (Issue #2) Refactor Access Token verification into a single function.
+/* TODO: (Issue #2) Refactor Access Token verification into a single function.
+
+This code is the code required to verify an access token token
+
+context.log(req);
+
+const authHeader = req.headers['authorization'];
+
+const token = authHeader && authHeader.split(' ')[1];
+
+if(token == null) {
+
+    context.res.status = 401;
+        
+} else {
+
+    context.res.status = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return 403;
+        } else {
+            return 204;
+        }
+    });
+
+} */
 
 const sql = require("mssql");
 const bcrypt = require("bcrypt");
