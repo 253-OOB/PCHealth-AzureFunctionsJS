@@ -30,7 +30,7 @@ Run `npm install -g recursive-install`
 
 Run `npm-recursive-install` (At the root directory)
 
-### Additional Requirments:
+### Additional Requirments: (Outdated)
 
 Add a file called local.settings.json in the main folder. Paste the following inside it:
 
