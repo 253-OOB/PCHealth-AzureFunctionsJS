@@ -1,0 +1,3 @@
+
+UPDATE PC_Health.dbo.Accounts set Refresh_Token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiYXViLmFhdDM2IiwiaWF0IjoxNjE1OTg3MzA4fQ.mRVdX2jRaEEId82oSU9RMQj-ABPHk--Iu_sxfusXK4VI9DF_zmgLjFt8LwABLQgZD6Cl5ABl70sPTVsXDTBv9Q' WHERE Username = 'aat36'
+UPDATE PC_Health.dbo.Accounts set Refresh_Token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiYXViLm1pYjE2IiwiaWF0IjoxNjE1OTg3MzM2fQ.gAXEms3F3t5MJSTcqGpdOslRknWuWSlZBMGSwUiQgGm4ulVmIv8EvTkLnHhl9XxhzMk9B5gA0zdqOypyYYsu0w' WHERE Username = 'mib16'
