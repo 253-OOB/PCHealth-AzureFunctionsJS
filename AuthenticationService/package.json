@@ -5,8 +5,5 @@
   "scripts": {
     "start": "func start",
     "test": "echo \"No tests yet...\""
-  },
-  "dependencies": {
-    "jsonwebtoken": "^8.5.1"
   }
 }

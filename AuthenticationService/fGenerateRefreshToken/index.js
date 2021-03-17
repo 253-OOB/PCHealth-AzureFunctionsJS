@@ -12,19 +12,20 @@ module.exports = async function (context, req) {
 
 }
 
+const REFRESH_TOKEN_PRIVATE_KEY = process.env.REFRESH_TOKEN_PRIVATE_KEY;
+
+const refreshSignOptions = {
+    algorithm: process.env.ALGORITHM
+}
+
 function generateRefreshToken( req ) {
 
     try {
 
         if ( req.body != null && "payload" in req.body && typeof req.body["payload"] === "string"  ) {
 
-            const refreshToken = jwt.sign( 
-                {
-                    payload:  req.body["payload"]
-                },
-                process.env.REFRESH_TOKEN_SECRET
-            );
-    
+            const refreshToken = jwt.sign( { payload:  req.body["payload"] }, process.env.REFRESH_TOKEN_PRIVATE_KEY, refreshSignOptions );
+
             return {
                 status: 200,
                 headers: { "Content-Type": "application/json" },
@@ -33,7 +34,6 @@ function generateRefreshToken( req ) {
 
         } else {
 
-            console.log(req);
             return {status: 400};
 
         }
@@ -42,7 +42,7 @@ function generateRefreshToken( req ) {
 
     } catch (err) {
 
-        console.log(err);
+        // console.error(err);
         return {status: 500};
 
     }

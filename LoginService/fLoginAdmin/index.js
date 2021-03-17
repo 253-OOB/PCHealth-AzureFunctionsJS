@@ -1,34 +1,11 @@
 
 
-/* TODO: (Issue #2) Refactor Access Token verification into a single function.
-
-This code is the code required to verify an access token token
-
-context.log(req);
-
-const authHeader = req.headers['authorization'];
-
-const token = authHeader && authHeader.split(' ')[1];
-
-if(token == null) {
-
-    context.res.status = 401;
-        
-} else {
-
-    context.res.status = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) {
-            return 403;
-        } else {
-            return 204;
-        }
-    });
-
-} */
+/* TODO: (Issue #2) Refactor Access Token verification into a single function. */
 
 const sql = require("mssql");
 const bcrypt = require("bcrypt");
 const fetch = require("node-fetch");
+const jwt = require("jsonwebtoken");
 
 // const dotenv = require("dotenv").config();
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing only
@@ -323,33 +300,32 @@ async function generateAccessToken( req ) {
 
 
 async function verifyAccessToken( req ) {
-
-    const status = async () => {
-        
-        try {
-
-            const verToken = await fetch ( 
-                process.env.AUTH_URL + "fVerifyToken", 
-                {
-                    method: "POST",
-                    headers: req.headers
-                }
-            )
-
-            const status_code = verToken.status;
-
-            return status_code;
-
-        } catch (err) {
-
-            console.log(err);
-            return 500;
-
-        }
-
+    
+    const authHeader = req.headers['authorization'];
+    
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    const signOptions = {
+        expiresIn: process.env.SHELFLIFE,
+        algorithm: process.env.ALGORITHM
     }
 
-    return await status();
+    if(token == null) {
+    
+        return 401;
+            
+    } else {
+    
+        try {
+            
+            jwt.verify(token, process.env.ACCESS_TOKEN_PUBLIC_KEY, signOptions);
+            return 204;
+
+        } catch (error) {
+            return 403;
+        }
+    
+    }
 
 }
 
