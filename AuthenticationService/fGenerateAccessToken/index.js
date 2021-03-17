@@ -33,34 +33,23 @@ async function generateAccessToken( req ) {
 
     // TODO: (Issue #16) Add additional checks on content of refresh token.
 
-    console.log(process.env.ALGORITHM);
-
     try {
 
-        if( req.body != null && "refreshToken" in req.body && typeof req.body["refreshToken"] === "string" ) {
+        const refreshToken = req.body.refreshToken;
 
-            const refreshToken = req.body.refreshToken;
+        const verToken = jwt.verify(refreshToken, REFRESH_TOKEN_PUBLIC_KEY, refreshSignOptions);
 
-            const verToken = jwt.verify(refreshToken, REFRESH_TOKEN_PUBLIC_KEY, refreshSignOptions);
+        const accessToken = jwt.sign( {payload: verToken.payload}, ACCESS_TOKEN_PRIVATE_KEY, accessSignOptions );
 
-            const accessToken = jwt.sign( {payload: verToken.payload}, ACCESS_TOKEN_PRIVATE_KEY, accessSignOptions );
-
-            return {
-                status: 200,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ accessToken: accessToken })
-            };
-
-        } else {
-
-            return {status: 403};
-
-        }
+        return {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accessToken: accessToken })
+        };
 
     } catch (error) {
 
-        console.error(error);
-        return {status: 500};
+        return {status: 403};
 
     }
 
