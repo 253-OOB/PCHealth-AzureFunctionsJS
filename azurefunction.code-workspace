@@ -15,7 +15,9 @@
 		
 	],
 	"settings": {
-		"debug.internalConsoleOptions": "neverOpen"
+		"debug.internalConsoleOptions": "neverOpen",
+		"ponicode.testSettings.testLocation.locationType": "Same folder as source file",
+		"ponicode.testSettings.testLocation.path": "{rootDir}/{filePath}/{fileName}.test.{ext}"
 	},
 	"launch": {
 		"configurations": [],
