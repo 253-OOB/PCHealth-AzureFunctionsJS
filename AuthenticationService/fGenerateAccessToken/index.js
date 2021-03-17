@@ -17,7 +17,6 @@ module.exports = async function (context, req) {
 
 async function generateAccessToken( req ) {
 
-    // TODO: (Issue #16) Add additional checks on content of refresh token.
 
     try {
 
