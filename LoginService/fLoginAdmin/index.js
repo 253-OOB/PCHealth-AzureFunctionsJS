@@ -1,7 +1,4 @@
 
-
-/* TODO: (Issue #2) Refactor Access Token verification into a single function. */
-
 const sql = require("mssql");
 const bcrypt = require("bcrypt");
 const fetch = require("node-fetch");
@@ -295,9 +292,6 @@ async function generateAccessToken( req ) {
     return resp;
 
 }
-
-// TODO: (Issue #2)Convert this function to use the Public key of the JWT token to verify the signature.
-
 
 async function verifyAccessToken( req ) {
     

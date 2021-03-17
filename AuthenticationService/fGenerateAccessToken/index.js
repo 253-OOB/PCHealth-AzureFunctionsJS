@@ -2,11 +2,8 @@
 const sql = require('mssql');
 const jwt = require('jsonwebtoken');
 
-
 // const dotenenv = require('dotenv').login();
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing
-
-// TODO: (Issue #2) Migrate from Symmetric to Asymmetric Key (Public Private) (https://siddharthac6.medium.com/json-web-token-jwt-the-right-way-of-implementing-with-node-js-65b8915d550e)
 
 
 module.exports = async function (context, req) {
@@ -30,8 +27,6 @@ const accessSignOptions = {
 }
 
 async function generateAccessToken( req ) {
-
-    // TODO: (Issue #16) Add additional checks on content of refresh token.
 
     try {
 
