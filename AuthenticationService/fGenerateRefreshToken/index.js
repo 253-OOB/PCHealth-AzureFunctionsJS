@@ -8,43 +8,44 @@ const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testi
 
 module.exports = async function (context, req) {
 
-    context.res = generateRefreshToken(context, req);
+    context.res = generateRefreshToken( req );
 
 }
 
-function generateRefreshToken(context, req) {
+function generateRefreshToken( req ) {
 
     try {
 
-        const body = req.body;
-
         // TODO: (Issue #15) add additional checks on payload.
-        if ( !("payload" in body) ) {
-            throw new Error("Payload attribute not found.")
+        if ( req.body != null && "payload" in req.body && typeof req.body["payload"] === "string"  ) {
+
+            const refreshToken = jwt.sign( 
+                {
+                    payload:  req.body["payload"]
+                },
+                process.env.REFRESH_TOKEN_SECRET
+            );
+    
+            return {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refreshToken: refreshToken })
+            };
+
+        } else {
+
+            console.log(req);
+            return {status: 400};
+
         }
 
-        const refreshToken = jwt.sign( 
-            {
-                payload:  body["payload"]
-            },
-            process.env.REFRESH_TOKEN_SECRET
-        );
-
-        return {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refreshToken: refreshToken })
-        };
+        
 
     } catch (err) {
 
         // TODO: (Issue #3) this error should not always be 500.
-
-        console.error(err);
-
-        context.res.status = 500;
-
-        return context.res;
+        console.log(err);
+        return {status: 500};
 
     }
 
