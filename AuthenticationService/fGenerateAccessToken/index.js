@@ -39,7 +39,7 @@ async function generateAccessToken( req ) {
 
                     } else {
 
-                        const accessToken = jwt.sign( {payload: verToken.payload}, process.env.ACCESS_TOKEN_SECRET );
+                        const accessToken = jwt.sign( {payload: verToken.payload}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "15min"} );
 
                         return {
                             status: 200,
