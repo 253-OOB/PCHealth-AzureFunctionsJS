@@ -2,11 +2,6 @@ const rewire = require("rewire")
 const index = rewire("./index")
 const getSignInInfo = index.__get__("getSignInInfo")
 
-/* TODO: (Issue #14) 
-
-- Add tests for non-string input values in getSignInInfo
-
-*/
 
 // @ponicode
 describe("getSignInInfo", () => {
@@ -56,6 +51,46 @@ describe("getSignInInfo", () => {
 
     test("Request with no query field", async () => {
         let result = await getSignInInfo({ status: 200 })
+        expect(result.status).toBe(400)
+    })
+
+    test("Request with non-JSON obj field", async () => {
+        let result = await getSignInInfo({ query: 1 })
+        expect(result.status).toBe(400)
+    })
+
+    test("Request with Email as an int", async () => {
+        let result = await getSignInInfo({ query: { Email: 1 } })
+        expect(result.status).toBe(400)
+    })
+
+    test("Undefined input", async () => {
+        let result = await getSignInInfo(undefined)
+        expect(result.status).toBe(500)
+    })
+
+    test("Request with a Username an int + Correct Organisation", async () => {
+        let result = await getSignInInfo({ query: { Username: 1, Organisation: "aub" } })
+        expect(result.status).toBe(400)
+    })
+
+    test("Request with an Organisation as an int + Correct Username", async () => {
+        let result = await getSignInInfo({ query: { Username: "aat36", Organisation: 1 } })
+        expect(result.status).toBe(400)
+    })
+
+    test("Request with an Organisation as a JSON obj + Correct Username", async () => {
+        let result = await getSignInInfo({ query: { Username: "aat36", Organisation: { test: 1 } } })
+        expect(result.status).toBe(400)
+    })
+
+    test("Request with a Username as a JSON obj + Correct Username", async () => {
+        let result = await getSignInInfo({ query: { Username: { test: "test" }, Organisation: "aub" } })
+        expect(result.status).toBe(400)
+    })
+
+    test("Request with an Email as JSON obj", async () => {
+        let result = await getSignInInfo({ query: { Email: { test: 1 } } })
         expect(result.status).toBe(400)
     })
 })

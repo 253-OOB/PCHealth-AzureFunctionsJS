@@ -115,6 +115,7 @@ const config = {
     }
 }
 
+
 async function getSignInInfo( req ) {
 
     let sql_response = undefined;
@@ -123,7 +124,7 @@ async function getSignInInfo( req ) {
 
         if ("query" in req) {
 
-            if ("Email" in req.query) {
+            if ( typeof req.query === typeof {} && "Email" in req.query && typeof req.query["Email"] === "string" ) {
                 
                 const pool = await sql.connect(config);
 
@@ -137,7 +138,7 @@ async function getSignInInfo( req ) {
 
                 pool.close();
 
-            } else if ("Username" in req.query && "Organisation" in req.query) {
+            } else if ( typeof req.query === typeof {} && "Username" in req.query && "Organisation" in req.query && ( typeof req.query["Username"] === "string" && typeof req.query["Organisation"] === "string" ) ) {
 
                 const pool = await sql.connect(config);
 
@@ -181,7 +182,15 @@ async function getSignInInfo( req ) {
 
 }
 
+
 async function addNewRefreshTokenToDB ( email, refreshToken ) {
+
+    /*
+     * This function does not need to be unit tested.
+     * It has no function output, and if it fails would not affect drastically the rest of the application.
+     * If this function executes, then its inputs are also correct, couretsy of the tests covering the functions executing before it.
+     * The database update has been tested, and it works.
+    */
 
     try {
             
@@ -204,6 +213,7 @@ async function addNewRefreshTokenToDB ( email, refreshToken ) {
     }
 
 }
+
 
 async function generateRefreshToken( payload ) {
 
@@ -286,6 +296,7 @@ async function generateAccessToken( req ) {
 }
 
 // TODO: (Issue #2)Convert this function to use the Public key of the JWT token to verify the signature.
+
 
 async function verifyAccessToken( req ) {
 
