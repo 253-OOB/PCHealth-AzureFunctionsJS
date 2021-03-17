@@ -22,7 +22,6 @@ function generateRefreshToken( req ) {
 
     try {
 
-        // TODO: (Issue #15) add additional checks on payload.
         if ( req.body != null && "payload" in req.body && typeof req.body["payload"] === "string"  ) {
 
             const refreshToken = jwt.sign( { payload:  req.body["payload"] }, process.env.REFRESH_TOKEN_PRIVATE_KEY, refreshSignOptions );
@@ -43,7 +42,6 @@ function generateRefreshToken( req ) {
 
     } catch (err) {
 
-        // TODO: (Issue #3) this error should not always be 500.
         // console.error(err);
         return {status: 500};
 
