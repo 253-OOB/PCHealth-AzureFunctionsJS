@@ -15,9 +15,25 @@ module.exports = async function (context, req) {
 
 }
 
+
+const REFRESH_TOKEN_PUBLIC_KEY = process.env.REFRESH_TOKEN_PUBLIC_KEY;
+
+const refreshSignOptions = {
+    algorithms: [process.env.ALGORITHM]
+}
+
+const ACCESS_TOKEN_PRIVATE_KEY = process.env.ACCESS_TOKEN_PRIVATE_KEY;
+
+const accessSignOptions = {
+    expiresIn: process.env.SHELFLIFE,
+    algorithm: process.env.ALGORITHM
+}
+
 async function generateAccessToken( req ) {
 
     // TODO: (Issue #16) Add additional checks on content of refresh token.
+
+    console.log(process.env.ALGORITHM);
 
     try {
 
@@ -25,46 +41,19 @@ async function generateAccessToken( req ) {
 
             const refreshToken = req.body.refreshToken;
 
-            const sql_resp = await verifyRefreshToken( refreshToken );
+            const verToken = jwt.verify(refreshToken, REFRESH_TOKEN_PUBLIC_KEY, refreshSignOptions);
 
-            if ( sql_resp.success == true ) {
-                
-                if( sql_resp.resp.recordset.length !== 0 ) {
+            const accessToken = jwt.sign( {payload: verToken.payload}, ACCESS_TOKEN_PRIVATE_KEY, accessSignOptions );
 
-                    const verToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-                    if (verToken == null) {
-        
-                        return {status: 403};
-
-                    } else {
-
-                        const accessToken = jwt.sign( {payload: verToken.payload}, process.env.ACCESS_TOKEN_SECRET );
-
-                        return {
-                            status: 200,
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ accessToken: accessToken })
-                        };
-
-                    }
-                
-
-                } else {
-
-                    return { status: 403 };
-
-                }
-
-            } else {
-
-                return {status: 500};
-            
-            } 
+            return {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ accessToken: accessToken })
+            };
 
         } else {
 
-            return {status: 400};
+            return {status: 403};
 
         }
 
@@ -74,51 +63,5 @@ async function generateAccessToken( req ) {
         return {status: 500};
 
     }
-
-}
-
-const SQL_SERVER=process.env.SQL_SERVER;
-const SQL_USER=process.env.SQL_USER;
-const SQL_PASS=process.env.SQL_PASS;
-const SQL_DATABASE=process.env.SQL_DATABASE;
-const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
-
-
-async function verifyRefreshToken( refreshToken ) {
-
-    try {
-
-        const config = {
-            server: SQL_SERVER,
-            user: SQL_USER,
-            password: SQL_PASS,
-            database: SQL_DATABASE,
-            options: {
-                encrypt: SQL_ENCRYPT,
-                trustedConnection: !SQL_ENCRYPT,
-                enableArithAbort: true
-            }
-        };
-
-        const pool = await sql.connect(config);
-
-        const request = pool.request();
-
-        // TODO: Change the name of Refresh_Token to RefreshToken in database.
-        const sql_response = await request.input('RefreshToken', sql.NVarChar, refreshToken)
-                                          .query("SELECT Refresh_Token FROM dbo.Accounts WHERE Refresh_Token=@RefreshToken");
-
-        pool.close();
-
-        return {success: true, resp: sql_response};
-
-    } catch (error) {
-
-        console.log("Could not connect to the database.");
-        console.log(error);
-        return { success: false };
-
-    }
-
 
 }

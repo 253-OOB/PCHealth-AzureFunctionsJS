@@ -1,41 +1,8 @@
 
 const rewire = require("rewire")
 const index = rewire("./index")
-const verifyRefreshToken = index.__get__("verifyRefreshToken")
 const generateAccessToken = index.__get__("generateAccessToken")
 
-// @ponicode
-describe("verifyRefreshToken", () => {
-    test("0", async () => {
-        let result = await verifyRefreshToken("zaCELgL. 0imfnc8mVLWwsAawjYr4Rx-Af50DDqtlx")
-        expect(result).toBe(-1)
-    })
-
-    test("1", async () => {
-        let result = await verifyRefreshToken("1234567890123456789012345678901234567890")
-        expect(result).toBe(-1)
-    })
-
-    test("2", async () => {
-        let result = await verifyRefreshToken("someRandomApiKey")
-        expect(result).toBe(-1)
-    })
-
-    test("3", async () => {
-        let result = await verifyRefreshToken("\u000b")
-        expect(result).toBe(-1)
-    })
-
-    test("4", async () => {
-        let result = await verifyRefreshToken("123")
-        expect(result).toBe(0)
-    })
-
-    test("5", async () => {
-        let result = await verifyRefreshToken("321")
-        expect(result).toBe(0)
-    })
-})
 
 // @ponicode
 describe("generateAccessToken", () => {
