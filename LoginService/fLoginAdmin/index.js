@@ -7,13 +7,6 @@ const jwt = require("jsonwebtoken");
 // const dotenv = require("dotenv").config();
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing only
 
-
-const SQL_SERVER=process.env.SQL_SERVER;
-const SQL_USER=process.env.SQL_USER;
-const SQL_PASS=process.env.SQL_PASS;
-const SQL_DATABASE=process.env.SQL_DATABASE;
-const SQL_ENCRYPT = process.env.SQL_ENCRYPT === "true";
-
 module.exports = async function (context, req) {
 
     context.res = await Login( context, req );
@@ -101,6 +94,12 @@ async function Login( context, req ) {
 
 }
 
+const SQL_SERVER=process.env.SQL_SERVER;
+const SQL_USER=process.env.SQL_USER;
+const SQL_PASS=process.env.SQL_PASS;
+const SQL_DATABASE=process.env.SQL_DATABASE;
+const SQL_ENCRYPT=process.env.SQL_ENCRYPT === "true";
+
 const config = {
     server: SQL_SERVER,
     user: SQL_USER,
@@ -161,8 +160,8 @@ async function getSignInInfo( req ) {
 
         }
 
-        console.log("Please verify the content of the sql_response.")
-        console.log(sql_response);
+        // console.log("Please verify the content of the sql_response.")
+        // console.log(sql_response);
 
         return {
             status: 200,
@@ -173,7 +172,7 @@ async function getSignInInfo( req ) {
 
         // Non-checkable errors are possible, testing will mostly not verify the full extent this catch statement.
 
-        console.log(err);
+        // console.error(err);
         return {status: 500};
         
     }
@@ -215,41 +214,30 @@ async function addNewRefreshTokenToDB ( email, refreshToken ) {
 
 async function generateRefreshToken( payload ) {
 
-    const resp = async () => {
+    try {
 
-        try {
-
-            const getToken = await fetch (
-                process.env.AUTH_URL + "fGenerateRefreshToken", 
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    json: payload,
-                    isRaw: true
-                }
-            )
-
-            if( getToken.status == 200 ) {
-
-                return {
-                    status: 200,
-                    token: getToken.json.accessToken
-                }
-
-            } else {
-
-                return { status: getToken.status };
-
-            }
-
-        } catch (err) {
-
-            console.log(err);
-            return { status: 500 }
-
+        refreshTokenPayload = {
+            "payload": payload
         }
 
-    };
+        const getToken = await fetch (
+            process.env.AUTH_URL + "fGenerateRefreshToken", 
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(refreshTokenPayload)
+            }
+        )
+
+        return getToken;
+
+    } catch (err) {
+
+        console.error(err);
+        return { status: 500 }
+
+    }
+
 
 }
 
@@ -293,6 +281,10 @@ async function generateAccessToken( req ) {
 
 }
 
+/*
+
+TEMPLATE FUNCTION TO VERIFY ACCESS TOKEN (NOT USED IN THIS FUNCTION)
+
 async function verifyAccessToken( req ) {
     
     const authHeader = req.headers['authorization'];
@@ -322,5 +314,5 @@ async function verifyAccessToken( req ) {
     }
 
 }
-
+*/
 

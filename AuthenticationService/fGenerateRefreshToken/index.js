@@ -38,8 +38,6 @@ function generateRefreshToken( req ) {
 
         }
 
-        
-
     } catch (err) {
 
         // console.error(err);
