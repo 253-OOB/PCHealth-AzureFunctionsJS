@@ -1,6 +1,9 @@
 const rewire = require("rewire")
+
 const index = rewire("./index")
+
 const generateRefreshToken = index.__get__("generateRefreshToken")
+
 // @ponicode
 describe("generateRefreshToken", () => {
     test("Normal Input", () => {

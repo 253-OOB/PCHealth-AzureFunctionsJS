@@ -9,11 +9,11 @@ const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testi
 
 module.exports = async function (context, req) {
 
-    context.res = await Login( context, req );
+    context.res = await Login( req );
 
 }
 
-async function Login( context, req ) {
+async function Login( req ) {
 
     const signInInfo = await getSignInInfo( req );
 
@@ -21,68 +21,83 @@ async function Login( context, req ) {
 
         const data = signInInfo.sql_resp;
 
-        if ( data.recordset.length > 0 ) {
+        if ( data.recordset.length == 1 ) {
 
-            const isCorrectCredentials = bcrypt.compare(req.body.password, data.recordset[0].Password);
+            if( "Password" in req.query && typeof req.query["Password"] === "string" ) {
 
-            if (isCorrectCredentials == true) {
-                
-                // If the user does not have a refresh token generate one.
+                const isCorrectCredentials = await bcrypt.compare(req.query.Password, data.recordset[0].Password);
 
-                const getRefreshToken = {
-                    status: 200, // Preliminary value in case the token already exists
-                    refreshToken: data.recordset[0].RefreshToken
-                };
+                if (isCorrectCredentials == true) {
+                    
+                    // If the user does not have a refresh token generate one.
 
-                if( getRefreshToken.refreshToken == null ) {
+                    let getRefreshToken = {
+                        status: 200, // Preliminary value in case the token already exists
+                        refreshToken: data.recordset[0].RefreshToken
+                    };
 
-                    getRefreshToken = await generateRefreshToken( data.recordset[0].Organization + "." + data.recordset[0].Username );
+                    if( getRefreshToken.refreshToken == null ) {
 
-                }
-
-                if( getRefreshToken.status == 200 ) {
-
-                    // No need to check this statement as it is an insert, and if it is not correctly inputed in the DB then the user will just need to sign in again after the access token expires.
-                    addNewRefreshTokenToDB(data.recordset[0].Email, getRefreshToken.RefreshToken);
-
-                    // Generate an access token
-                    const getAccessToken = await generateAccessToken( {headers: getRefreshToken.refreshToken} );
-
-                    if ( getAccessToken.status == 200 ) {
-
-                        const json_bdy = {
-                            accessToken: getAccessToken.accessToken,
-                            refreshToken: getRefreshToken.refreshToken
-                        }
-
-                        return {
-                            status: 200,
-                            headers: { "Content-Type": "application/json" },
-                            json: json_body,
-                            isRaw: true
-                        }
-
-                    } else {
-
-                        return {status: 500};
+                        const payload = data.recordset[0].OrganisationName + "." + data.recordset[0].Username;
+                        getRefreshToken = await generateRefreshToken( payload );
 
                     }
 
-                    
+                    if( getRefreshToken.status == 200 ) {
+
+                        // No need to check this statement as it is an insert, and if it is not correctly inputed in the DB then the user will just need to sign in again after the access token expires.
+                        addNewRefreshTokenToDB(data.recordset[0].Email, getRefreshToken.refreshToken);
+
+                        // Generate an access token
+                        const getAccessToken = await generateAccessToken(getRefreshToken.refreshToken);
+
+                        if ( getAccessToken.status == 200 ) {
+
+                            const json_body = {
+                                accessToken: getAccessToken.accessToken,
+                                refreshToken: getRefreshToken.refreshToken
+                            }
+
+                            return {
+                                status: 200,
+                                headers: { "Content-Type": "application/json" },
+                                body: json_body
+                            }
+
+                        } else {
+
+                            // console.log(5);
+                            return {status: getAccessToken.status};
+
+                        }
+
+                        
+
+                    } else {
+
+                        // console.log(4);
+                        return { status: getRefreshToken.status};
+
+                    }
 
                 } else {
 
-                    return { status: refreshToken.status};
+                    // console.log(3);
+                    return {status: 403};
 
                 }
 
             } else {
-                return {status: 403};
+
+                // console.log(2);
+                return {status: 400};
+
             }
 
         } else {
 
-            return {status: 403};
+            // console.log(1);
+            return {status: 400};
 
         }
 
@@ -131,7 +146,7 @@ async function getSignInInfo( req ) {
 
 
                 sql_response = await request.input('Email', sql.NVarChar, req.query["Email"])
-                                            .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
+                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
 
                 pool.close();
 
@@ -145,7 +160,7 @@ async function getSignInInfo( req ) {
 
                 sql_response = await request.input("Organisation", sql.NVarChar, req.query["Organisation"])
                                             .input("Username", sql.NVarChar, req.query["Username"])
-                                            .query("SELECT t1.Password, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
+                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
 
                 pool.close();
 
@@ -217,7 +232,7 @@ async function generateRefreshToken( payload ) {
     try {
 
         refreshTokenPayload = {
-            "payload": payload
+            payload: payload
         }
 
         const getToken = await fetch (
@@ -229,11 +244,22 @@ async function generateRefreshToken( payload ) {
             }
         )
 
-        return getToken;
+        if( getToken.status == 200 ) {
+
+            const refreshToken = await getToken.json();
+
+            return {
+                status: 200,
+                refreshToken: refreshToken["refreshToken"]
+            };
+
+        } else {
+            return {status: getToken.status};
+        }
 
     } catch (err) {
 
-        console.error(err);
+        // console.log(err);
         return { status: 500 }
 
     }
@@ -241,43 +267,30 @@ async function generateRefreshToken( payload ) {
 
 }
 
-async function generateAccessToken( req ) {
+async function generateAccessToken( refreshToken ) {
 
-    const resp = async () => {
+    try {
 
-        try {
+        bodyContent = {
+            "refreshToken": refreshToken
+        };
 
-            const getToken = await fetch (
-                process.env.AUTH_URL + "fGenerateAccessToken", 
-                {
-                    method: "POST",
-                    headers: req.headers
-                }
-            )
-
-            if( getToken.status == 200 ) {
-
-                return {
-                    status: 200,
-                    accressToken: getToken.json.accessToken
-                }
-
-            } else {
-
-                return { status: getToken.status };
-
+        const getToken = await fetch (
+            process.env.AUTH_URL + "fGenerateAccessToken", 
+            {
+                method: "POST",
+                body: JSON.stringify(bodyContent)
             }
+        )
 
-        } catch (err) {
+        return getToken;
 
-            console.log(err);
-            return { status: 500 }
+    } catch (err) {
 
-        }
+        // console.log(err);
+        return { status: 500 }
 
-    };
-
-    return resp;
+    }
 
 }
 
