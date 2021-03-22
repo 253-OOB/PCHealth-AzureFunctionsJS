@@ -2,7 +2,6 @@
 
 const jwt = require("jsonwebtoken");
 
-// const dotenv = require("dotenv").config();
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing only
 
 
@@ -12,7 +11,6 @@ module.exports = async function (context, req) {
 
 }
 
-const REFRESH_TOKEN_PRIVATE_KEY = process.env.REFRESH_TOKEN_PRIVATE_KEY;
 
 const refreshSignOptions = {
     algorithm: process.env.ALGORITHM
