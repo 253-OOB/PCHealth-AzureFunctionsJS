@@ -283,7 +283,20 @@ async function generateAccessToken( refreshToken ) {
             }
         )
 
-        return getToken;
+        if( getToken.status == 200 ) {
+
+            const refreshToken = await getToken.json();
+
+            return {
+                status: 200,
+                refreshToken: refreshToken["refreshToken"]
+            };
+
+        } else {
+
+            return {status: getToken.status};
+
+        }
 
     } catch (err) {
 

@@ -37,13 +37,11 @@ describe("getSignInInfo", () => {
     test("Non-Existing Username + Existing Organisation", async () => {
         let result = await getSignInInfo({ query: { Username: "sgfcwgf", Organisation: "aub" } })
         expect(result.status).toBe(200)
-        expect(result.sql_resp.recordset[0]).toBe(undefined)
     })
 
     test("Existing Username + Non-Existing Organisation", async () => {
         let result = await getSignInInfo({ query: { Username: "aat36", Organisation: "kjgfuegri" } })
         expect(result.status).toBe(200)
-        expect(result.sql_resp.recordset[0]).toBe(undefined)
     })
 
     test("Empty Request", async () => {
@@ -99,7 +97,7 @@ describe("getSignInInfo", () => {
 
 // @ponicode
 describe("generateRefreshToken", () => {
-    test("String", async () => {
+    test("String 1", async () => {
         let result = await generateRefreshToken("aub.aat36")
         expect(result.status).toBe(200)
     })
@@ -109,7 +107,7 @@ describe("generateRefreshToken", () => {
         expect(result.status).toBe(400)
     })
 
-    test("String", async () => {
+    test("String 2", async () => {
         let result = await generateRefreshToken("\"{\"x\":5,\"y\":6}\"")
         expect(result.status).toBe(200)
     })
