@@ -285,11 +285,11 @@ async function generateAccessToken( refreshToken ) {
 
         if( getToken.status == 200 ) {
 
-            const refreshToken = await getToken.json();
+            const accessToken = await getToken.json();
 
             return {
                 status: 200,
-                refreshToken: refreshToken["refreshToken"]
+                accessToken: accessToken["accessToken"]
             };
 
         } else {
