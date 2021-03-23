@@ -1,5 +1,4 @@
 
-const sql = require('mssql');
 const jwt = require('jsonwebtoken');
 
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing
