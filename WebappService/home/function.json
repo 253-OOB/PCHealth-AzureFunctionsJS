@@ -14,7 +14,7 @@
       "name": "indexBlob",
       "type": "blob",
       "path": "pchealth/app/{filename}",
-      "connection": "StorageConnectionString",
+      "connection": "AzureWebJobsStorage",
       "direction": "in"
     },
     {
