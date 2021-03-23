@@ -6,9 +6,16 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
-        "post"
-      ]
+        "get"
+      ],
+      "route": "home/{filename}" 
+    },
+    {
+      "name": "indexBlob",
+      "type": "blob",
+      "path": "pchealth/app/{filename}",
+      "connection": "StorageConnectionString",
+      "direction": "in"
     },
     {
       "type": "http",
