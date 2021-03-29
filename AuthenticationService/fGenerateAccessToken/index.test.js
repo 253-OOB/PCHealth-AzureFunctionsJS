@@ -2,11 +2,23 @@ const rewire = require("rewire")
 
 
 
+
+
+
+
 const index = rewire("./index")
 
 
 
+
+
+
+
 const generateAccessToken = index.__get__("generateAccessToken")
+
+
+
+
 
 
 
