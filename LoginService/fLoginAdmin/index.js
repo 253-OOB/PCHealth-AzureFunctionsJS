@@ -231,7 +231,7 @@ async function generateRefreshToken( payload ) {
 
     try {
 
-        refreshTokenPayload = {
+        const refreshTokenPayload = {
             payload: payload
         }
 
