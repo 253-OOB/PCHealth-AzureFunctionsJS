@@ -44,7 +44,7 @@ describe("generateAccessToken", () => {
 
     test("Empty Request (Not practical but usefull check)", async () => {
         let result = await generateAccessToken({})
-        expect(result.status).toBe(403)
+        expect(result.status).toBe(500)
     })
 
     test("Empty String refreshToken", async () => {
@@ -54,12 +54,12 @@ describe("generateAccessToken", () => {
 
     test("Undefined Request", async () => {
         let result = await generateAccessToken(undefined)
-        expect(result.status).toBe(403)
+        expect(result.status).toBe(500)
     })
 
     test("Undefined Body", async () => {
         let result = await generateAccessToken({ body: undefined })
-        expect(result.status).toBe(403)
+        expect(result.status).toBe(500)
     })
 
     test("Non-existing token 3", async () => {

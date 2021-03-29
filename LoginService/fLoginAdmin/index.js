@@ -28,13 +28,13 @@ async function Login( req ) {
                 const isCorrectCredentials = await bcrypt.compare(req.query.Password, data.recordset[0].Password);
 
                 if (isCorrectCredentials == true) {
-                    
-                    // If the user does not have a refresh token generate one.
 
                     let getRefreshToken = {
                         status: 200, // Preliminary value in case the token already exists
                         refreshToken: data.recordset[0].RefreshToken
                     };
+
+                    // If the user does not have a refresh token generate one.
 
                     if( getRefreshToken.refreshToken == null ) {
 
@@ -250,7 +250,7 @@ async function generateRefreshToken( payload ) {
 
             return {
                 status: 200,
-                refreshToken: refreshToken["refreshToken"]
+                refreshToken: refreshToken["token"]
             };
 
         } else {
@@ -289,7 +289,7 @@ async function generateAccessToken( refreshToken ) {
 
             return {
                 status: 200,
-                accessToken: accessToken["accessToken"]
+                accessToken: accessToken["token"]
             };
 
         } else {
