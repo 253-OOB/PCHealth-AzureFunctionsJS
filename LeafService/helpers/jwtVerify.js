@@ -16,14 +16,13 @@ module.exports.verifyInitialisationToken = (initialisationToken) => {
     const options = {
 
         expiresIn: process.env.LEAF_CREATION_TOKEN_SHELFLIFE,
-        algorithms: [LEAF_CREATION_TOKEN_ALGORITHM]
+        algorithms: [process.env.LEAF_CREATION_TOKEN_ALGORITHM]
 
     }
 
     try {
 
         const payload = jwt.verify( initialisationToken, publicKey, options ).payload;
-
         return {
             status: 200,
             payload: payload
@@ -31,6 +30,7 @@ module.exports.verifyInitialisationToken = (initialisationToken) => {
 
     } catch (error) {
 
+        // TODO Token expired error is not caught here.
         if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError" || error.name === "NotBeforeError") {
             
             return {status: 403};

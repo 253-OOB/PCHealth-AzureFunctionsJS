@@ -1,20 +1,13 @@
 {
   "bindings": [
     {
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
       "methods": [
         "get"
       ]
-    },
-    {
-      "name": "tableBinding",
-      "type": "table",
-      "tableName": "PCHealthBasicData",
-      "connection": "StorageConnectionString",
-      "direction": "in"
     },
     {
       "type": "http",

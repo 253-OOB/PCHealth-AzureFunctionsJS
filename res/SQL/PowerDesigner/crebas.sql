@@ -1,168 +1,25 @@
 /*==============================================================*/
+/* Database name:  PC_HEALTH                                    */
 /* DBMS name:      Microsoft SQL Server 2017                    */
-/* Created on:     3/25/2021 6:26:59 PM                         */
+/* Created on:     3/30/2021 9:46:05 AM                         */
 /*==============================================================*/
 
+USE master;
+GO
+ALTER DATABASE PC_HEALTH 
+SET SINGLE_USER 
+WITH ROLLBACK IMMEDIATE;
 
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('ACCOUNTS') and o.name = 'FK_ACCOUNTS_REFERENCE_ORGANISA')
-alter table ACCOUNTS
-   drop constraint FK_ACCOUNTS_REFERENCE_ORGANISA
+drop database PC_HEALTH
 go
 
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('CORES') and o.name = 'FK_CORES_REFERENCE_CPU_READ')
-alter table CORES
-   drop constraint FK_CORES_REFERENCE_CPU_READ
+/*==============================================================*/
+/* Database: PC_HEALTH                                          */
+/*==============================================================*/
+create database PC_HEALTH
 go
 
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('CPU_READING') and o.name = 'FK_CPU_READ_REFERENCE_LEAF')
-alter table CPU_READING
-   drop constraint FK_CPU_READ_REFERENCE_LEAF
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('DISKS') and o.name = 'FK_DISKS_REFERENCE_DISK_REA')
-alter table DISKS
-   drop constraint FK_DISKS_REFERENCE_DISK_REA
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('DISK_READING') and o.name = 'FK_DISK_REA_REFERENCE_LEAF')
-alter table DISK_READING
-   drop constraint FK_DISK_REA_REFERENCE_LEAF
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('LEAF') and o.name = 'FK_LEAF_REFERENCE_ORGANISA')
-alter table LEAF
-   drop constraint FK_LEAF_REFERENCE_ORGANISA
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PROCESSES') and o.name = 'FK_PROCESSE_REFERENCE_PROCESS_')
-alter table PROCESSES
-   drop constraint FK_PROCESSE_REFERENCE_PROCESS_
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PROCESS_READING') and o.name = 'FK_PROCESS__REFERENCE_LEAF')
-alter table PROCESS_READING
-   drop constraint FK_PROCESS__REFERENCE_LEAF
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('RAM_READING') and o.name = 'FK_RAM_READ_REFERENCE_LEAF')
-alter table RAM_READING
-   drop constraint FK_RAM_READ_REFERENCE_LEAF
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('THREADS') and o.name = 'FK_THREADS_REFERENCE_PROCESSE')
-alter table THREADS
-   drop constraint FK_THREADS_REFERENCE_PROCESSE
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('VIDEOCONTROLLER') and o.name = 'FK_VIDEOCON_REFERENCE_LEAF')
-alter table VIDEOCONTROLLER
-   drop constraint FK_VIDEOCON_REFERENCE_LEAF
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ACCOUNTS')
-            and   type = 'U')
-   drop table ACCOUNTS
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('CORES')
-            and   type = 'U')
-   drop table CORES
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('CPU_READING')
-            and   type = 'U')
-   drop table CPU_READING
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('DISKS')
-            and   type = 'U')
-   drop table DISKS
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('DISK_READING')
-            and   type = 'U')
-   drop table DISK_READING
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('LEAF')
-            and   type = 'U')
-   drop table LEAF
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('ORGANISATION')
-            and   type = 'U')
-   drop table ORGANISATION
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('PROCESSES')
-            and   type = 'U')
-   drop table PROCESSES
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('PROCESS_READING')
-            and   type = 'U')
-   drop table PROCESS_READING
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('RAM_READING')
-            and   type = 'U')
-   drop table RAM_READING
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('THREADS')
-            and   type = 'U')
-   drop table THREADS
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('VIDEOCONTROLLER')
-            and   type = 'U')
-   drop table VIDEOCONTROLLER
+use PC_HEALTH
 go
 
 /*==============================================================*/
@@ -251,8 +108,7 @@ create table DISKS (
    DISK_READING_ID      int                  null,
    NAME                 varchar(max)         not null,
    FREESPACE            bigint               not null,
-   SIZE                 varchar(max)         not null,
-   STATUS               varchar(max)         not null,
+   SIZE                 bigint               not null,
    FILESYSTEM           varchar(max)         not null,
    DISKBYTESPERSEC      bigint               not null,
    DISKREADBYTESPERSEC  bigint               not null,
@@ -297,9 +153,10 @@ go
 /*==============================================================*/
 create table LEAF (
    LEAFID               int                  identity,
-   LEAFTOKEN            varchar(max)         not null,
+   LEAFTOKEN            varchar(512)         not null,
    ASSIGNEDNAME         varchar(50)          not null,
    ORGANISATIONID       int                  not null,
+   COMPUTERNAME         varchar(Max)         not null,
    constraint PK_LEAF primary key (LEAFID),
    constraint AK_LEAFTOKEN_LEAF unique (LEAFTOKEN)
 )
@@ -432,8 +289,8 @@ go
 /* Table: VIDEOCONTROLLER                                       */
 /*==============================================================*/
 create table VIDEOCONTROLLER (
-   VIDEOCONTROLLER_READING_ID numeric              identity,
-   LEAFID               numeric              null,
+   VIDEOCONTROLLER_READING_ID int                  identity,
+   LEAFID               int                  null,
    NAME                 varchar(max)         not null,
    TIMESTAMP            char(10)             not null,
    constraint PK_VIDEOCONTROLLER primary key (VIDEOCONTROLLER_READING_ID)

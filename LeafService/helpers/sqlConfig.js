@@ -3,17 +3,18 @@
 const sql = require("mssql");
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'});
 
-module.exports.BigInt = sql.BigInt;
-module.exports.Binary = sql.Binary;
-module.exports.Bit = sql.Bit;
-module.exports.Char = sql.Char;
-module.exports.Date = sql.Date;
-module.exports.DateTime = sql.DateTime;
-module.exports.Decimal = sql.Decimal;
-module.exports.Float = sql.Float;
-module.exports.Int = sql.Int;
-module.exports.NChar = sql.NChar;
-module.exports.NVarChar = sql.NVarChar;
+
+module.exports.BigInt = () => { return sql.BigInt};
+module.exports.Binary = () => { return sql.Binary };
+module.exports.Bit = () => { return sql.Bit };
+module.exports.Char = () => { return sql.Char };
+module.exports.Date = () => { return sql.Date };
+module.exports.DateTime = () => { return sql.DateTime };
+module.exports.Decimal = () => {return  sql.Decimal };
+module.exports.Float = () => { return sql.Float };
+module.exports.Int = () => { return sql.Int };
+module.exports.NChar = () => { return sql.NChar };
+module.exports.NVarChar = () => { return sql.NVarChar };
 
 const sqlconfig = {
     server: process.env.SQL_SERVER,
@@ -37,22 +38,23 @@ module.exports.query = async ( query_string, inputs ) => {
 
         const request = pool.request();
 
-        // TODO Change Refresh token name in database from Refresh_Token to RefreshToken
-
         for( let i=0; i<inputs.length; i++ ) {
-            request.input(inputs.name, inputs.type, inputs.value);
+            request.input(inputs[i].name, (inputs[i].type) (), inputs[i].value);
         }
-
 
         sql_response = await request.query(query_string);
 
         pool.close();
 
-        return sql_response;
+        if(sql_response.rowsAffected == 1) {
+            return {status: 200}
+        } else {
+            return { status: 500 }
+        }
 
     } catch (err) {
 
-        // console.error(err);
+        console.log(err);
         return {status: 500};
         
     }

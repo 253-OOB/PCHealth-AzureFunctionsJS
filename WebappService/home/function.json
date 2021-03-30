@@ -11,16 +11,9 @@
       "route": "home/{filename}" 
     },
     {
-      "name": "configurationBlob",
+      "name": "indexBlob",
       "type": "blob",
-      "path": "pchealth/leaf/config/{filename}",
-      "connection": "AzureWebJobsStorage",
-      "direction": "in"
-    },
-    {
-      "name": "defaultConfigBlob",
-      "type": "blob",
-      "path": "pchealth/leaf/config/default.json",
+      "path": "pchealth/app/{filename}",
       "connection": "AzureWebJobsStorage",
       "direction": "in"
     },

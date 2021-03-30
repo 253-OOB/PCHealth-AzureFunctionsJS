@@ -17,7 +17,9 @@ module.exports = async function (context, req) {
         configurationBlob = context.bindings.defaultConfigBlob;
     }
 
-    context.res = initialiseLeaf(req, configurationBlob);
+    const resp= await initialiseLeaf(req, configurationBlob);
+
+    context.res = resp;
 
 }
 
@@ -31,24 +33,24 @@ async function initialiseLeaf( req, configurationBlob ) {
 
     try {
 
-        const initialisationTokenPresent = "InitialisationToken" in req.body && typeof req.body["InitialisationToken"] === "string";
+        const initialisationTokenPresent = ("InitialisationToken" in req.body) && typeof (req.body["InitialisationToken"] === "string");
         const computerNamePresent =  "ComputerName" in req.body && typeof req.body["ComputerName"] === "string";
 
         if ( req.body != null && initialisationTokenPresent && computerNamePresent ) {
 
-            const verfication = await jwtVerify.verifyInitialisationToken( req.body.InitialisationToken );
+            const verification = await jwtVerify.verifyInitialisationToken( req.body.InitialisationToken );
 
-            if (verification === 200) {
-                
+            if (verification.status === 200) {
+
                 const refreshTokenCreation = await generateRefreshToken( verification.payload );
 
                 if (refreshTokenCreation.status === 200) {
 
-                    const dbInsertOperation = registerLeafInDB(req.body["ComputerName"], refreshTokenCreation.refreshToken, verification.payload);
+                    const dbInsertOperation = await registerLeafInDB(req.body["ComputerName"], refreshTokenCreation.refreshToken, verification.payload);
 
                     if (dbInsertOperation.status === 200) {
 
-                        return {
+                        res = {
 
                             status: 200,
 
@@ -59,15 +61,17 @@ async function initialiseLeaf( req, configurationBlob ) {
                             body: {
 
                                 RefreshToken: refreshTokenCreation.refreshToken,
-                                AccessToken: accessTokenCreation.accessToken,
-                                Configuration: configurationBlob
+                                Configuration: JSON.stringify(configurationBlob)
 
                             }
 
                         };
 
+                        return res
+
                     } else {
 
+                        console.log("dbInsertOperation")
                         return {status: dbInsertOperation.status};
 
                     }
@@ -79,19 +83,19 @@ async function initialiseLeaf( req, configurationBlob ) {
                 }
 
             } else {
-
-                return {status: verfication.status};
+                
+                return {status: verification.status};
 
             }
 
         } else {
-
+            
             return {status: 400};
 
         }
 
     } catch (error) {
-
+        
         return {status: 500};
 
     }
@@ -106,38 +110,54 @@ async function generateRefreshToken( payload ) {
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: payload
+            body: JSON.stringify({payload: payload})
         }
     )
 
-    return newRefreshToken;
+    // TODO Check for status code errors
+    const data = await newRefreshToken.json();
+
+    return {
+        status: newRefreshToken.status,
+        refreshToken: data.token
+    };
 
 }
 
 async function registerLeafInDB(ComputerName, LeafToken, OrganisationEmail) {
 
+    try {
 
-    inputs = [
-        {
-            name: "ComputerName",
-            type: sql.NVarChar,
-            value: ComputerName
-        },
-        {
-            name: "LeafToken",
-            type: sql.NVarChar,
-            value: LeafToken
-        },
-        {
-            name: "OrganisationEmail",
-            type: sql.NVarChar,
-            value: OrganisationEmail
-        }
-    ]
+        console.log("HERE");
 
-    sql_results = await sql.query("INSERT INTO Leaf (ComputerName, AssignedName, LeafToken, OrganisationID) SELECT @ComputerName, @ComputerName, @LeadToken, t1.OrganisationID as t1 FROM Organisation WHERE t1.Email = @OrganisationEmail", inputs);
+        inputs = [
+            {
+                name: "ComputerName",
+                type: sql.NVarChar,
+                value: ComputerName
+            },
+            {
+                name: "LeafToken",
+                type: sql.NVarChar,
+                value: LeafToken
+            },
+            {
+                name: "OrganisationEmail",
+                type: sql.NVarChar,
+                value: OrganisationEmail
+            }
+        ]
 
-    return sql_results;
+        sql_results = await sql.query("INSERT INTO Leaf (ComputerName, AssignedName, LeafToken, OrganisationID) SELECT @ComputerName, @ComputerName, @LeafToken, t1.OrganisationID FROM Organisation as t1 WHERE t1.Email = @OrganisationEmail", inputs);
+
+        return sql_results;
+    
+    } catch (error) {
+
+        console.log(error);
+        return {status: 500}
+
+    }
 
 
 }

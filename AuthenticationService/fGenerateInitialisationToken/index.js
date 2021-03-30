@@ -6,7 +6,11 @@ const helpers = require("../helpers/generateToken")
 
 module.exports = async function (context, req) {
 
-    context.res = generateInitialisationToken( req );
+    resp = generateInitialisationToken( req );
+
+    context.log(resp);
+
+    context.res = resp;
 
 }
 

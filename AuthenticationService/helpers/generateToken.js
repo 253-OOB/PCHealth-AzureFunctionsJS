@@ -5,6 +5,10 @@ module.exports.generateToken = (signParameters, verify=false, verification = und
 
     try {
 
+        console.log(signParameters);
+        console.log(verify);
+        console.log(verification);
+
         if (verify === true) {
 
             const verificationToken = verification.Token;
