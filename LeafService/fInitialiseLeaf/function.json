@@ -6,18 +6,17 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get"
+        "post"
       ],
-      "route": "getLoginPage/{filename=index.html}"
+      "route":"fInitialiseLeaf/{filename}"
     },
     {
-      "name": "inputBlob",
+      "name": "configurationBlob",
       "type": "blob",
-      "path": "webapp/login/{filename}",
-      "connection": "StorageConnectionString",
+      "path": "pchealth/leaf/configurations/{filename}",
+      "connection": "AzureWebJobsStorage",
       "direction": "in"
     },
-    
     {
       "type": "http",
       "direction": "out",

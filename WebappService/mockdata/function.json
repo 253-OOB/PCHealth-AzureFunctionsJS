@@ -1,19 +1,20 @@
 {
   "bindings": [
     {
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
       "methods": [
         "get"
-      ]
+      ],
+      "route": "mockdata/{filename}" 
     },
     {
-      "name": "tableBinding",
-      "type": "table",
-      "tableName": "PCHealthBasicData",
-      "connection": "StorageConnectionString",
+      "name": "dataBlob",
+      "type": "blob",
+      "path": "pchealth/mockdata/{filename}",
+      "connection": "AzureWebJobsStorage",
       "direction": "in"
     },
     {
