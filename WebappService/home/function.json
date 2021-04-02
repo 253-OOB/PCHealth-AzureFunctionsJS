@@ -1,14 +1,21 @@
 {
   "bindings": [
     {
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
-        "post"
-      ]
+        "get"
+      ],
+      "route": "home/{filename}" 
+    },
+    {
+      "name": "indexBlob",
+      "type": "blob",
+      "path": "pchealth/app/{filename}",
+      "connection": "AzureWebJobsStorage",
+      "direction": "in"
     },
     {
       "type": "http",

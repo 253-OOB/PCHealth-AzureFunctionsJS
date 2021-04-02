@@ -28,13 +28,13 @@ async function Login( req ) {
                 const isCorrectCredentials = await bcrypt.compare(req.query.Password, data.recordset[0].Password);
 
                 if (isCorrectCredentials == true) {
-                    
-                    // If the user does not have a refresh token generate one.
 
                     let getRefreshToken = {
                         status: 200, // Preliminary value in case the token already exists
                         refreshToken: data.recordset[0].RefreshToken
                     };
+
+                    // If the user does not have a refresh token generate one.
 
                     if( getRefreshToken.refreshToken == null ) {
 
@@ -142,11 +142,8 @@ async function getSignInInfo( req ) {
 
                 const request = pool.request();
 
-                // TODO Change Refresh token name in database from Refresh_Token to RefreshToken
-
-
                 sql_response = await request.input('Email', sql.NVarChar, req.query["Email"])
-                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
+                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.RefreshToken as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
 
                 pool.close();
 
@@ -155,12 +152,10 @@ async function getSignInInfo( req ) {
                 const pool = await sql.connect(config);
 
                 const request = pool.request();
-                
-                // TODO Change Refresh token name in database from Refresh_Token to RefreshToken
 
                 sql_response = await request.input("Organisation", sql.NVarChar, req.query["Organisation"])
                                             .input("Username", sql.NVarChar, req.query["Username"])
-                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.Refresh_Token as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
+                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.RefreshToken as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
 
                 pool.close();
 
@@ -210,11 +205,9 @@ async function addNewRefreshTokenToDB ( email, refreshToken ) {
 
         const request = pool.request();
 
-        // TODO Change Refresh token name in database from Refresh_Token to RefreshToken
-
         sql_response = await request.input("Email", sql.NVarChar, email)
                                     .input("RefreshToken", sql.NVarChar, refreshToken)
-                                    .query("UPDATE dbo.Accounts SET Refresh_Token=@RefreshToken WHERE Email=@Email");
+                                    .query("UPDATE dbo.Accounts SET RefreshToken=@RefreshToken WHERE Email=@Email");
 
         pool.close();
 
@@ -231,7 +224,7 @@ async function generateRefreshToken( payload ) {
 
     try {
 
-        refreshTokenPayload = {
+        const refreshTokenPayload = {
             payload: payload
         }
 
@@ -250,7 +243,7 @@ async function generateRefreshToken( payload ) {
 
             return {
                 status: 200,
-                refreshToken: refreshToken["refreshToken"]
+                refreshToken: refreshToken["token"]
             };
 
         } else {
@@ -289,7 +282,7 @@ async function generateAccessToken( refreshToken ) {
 
             return {
                 status: 200,
-                accessToken: accessToken["accessToken"]
+                accessToken: accessToken["token"]
             };
 
         } else {

@@ -7,6 +7,10 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "alasql": "^1.7.2"
+    "alasql": "^1.7.2",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mssql": "^6.3.1",
+    "node-fetch": "^2.6.1"
   }
 }
