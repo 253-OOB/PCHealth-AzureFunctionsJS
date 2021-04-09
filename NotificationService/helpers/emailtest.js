@@ -1,9 +1,9 @@
 
-const dotenv = require('dotenv').config();
+const dtenv = require('dotenv').config();
 var nodemailer = require('nodemailer');
 
 
-function sendEMail(receiver,subject,body){
+function sendEMail(receiver, subject, body){
 
   var transporter = nodemailer.createTransport({
     service: process.env.SERVICE,
@@ -29,5 +29,3 @@ function sendEMail(receiver,subject,body){
   });
 
 }
-
-sendEMail("chaabanjoseph8@gmail.com","test","body")
