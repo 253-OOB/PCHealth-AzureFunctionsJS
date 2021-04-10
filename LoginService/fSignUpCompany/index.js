@@ -1,10 +1,22 @@
 
 
 module.exports = async function (context, req) {
-    
-    
 
+    fSignupCompany();
     context.res.status = 501;
+    
+}
+
+function fSignupCompany() {
+
+
+
+}
+
+// Name
+// Password
+// Email - Varify that its a valid
+function verifyCredentials(req) {
 
 }
 
