@@ -9,8 +9,6 @@ const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testi
 
 module.exports = async function (context, req) {
 
-    context.log(dotenv);
-
     context.res = await Login( req );
 
 }
