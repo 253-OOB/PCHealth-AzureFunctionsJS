@@ -1,6 +1,6 @@
 
 const sql = require("mssql");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const fetch = require("node-fetch");
 const jwt = require("jsonwebtoken");
 
@@ -8,6 +8,8 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing only
 
 module.exports = async function (context, req) {
+
+    context.log(dotenv);
 
     context.res = await Login( req );
 
