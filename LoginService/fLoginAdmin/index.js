@@ -38,7 +38,7 @@ async function Login( req ) {
 
                     if( getRefreshToken.refreshToken == null ) {
 
-                        const payload = data.recordset[0].OrganisationName + "." + data.recordset[0].Username;
+                        const payload = data.recordset[0].Username;
                         getRefreshToken = await generateRefreshToken( payload );
 
                     }
@@ -89,14 +89,14 @@ async function Login( req ) {
 
             } else {
 
-                // console.log(2);
+                console.log(2);
                 return {status: 400};
 
             }
 
         } else {
 
-            // console.log(1);
+            console.log(1);
             return {status: 400};
 
         }
@@ -143,24 +143,23 @@ async function getSignInInfo( req ) {
                 const request = pool.request();
 
                 sql_response = await request.input('Email', sql.NVarChar, req.query["Email"])
-                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.RefreshToken as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Email=@Email");
+                                            .query("SELECT t1.Password, t1.Email, t1.Username, t1.RefreshToken FROM proj09.Accounts as t1 WHERE t1.Email=@Email");
 
                 pool.close();
 
-            } else if ( typeof req.query === typeof {} && "Username" in req.query && "Organisation" in req.query && ( typeof req.query["Username"] === "string" && typeof req.query["Organisation"] === "string" ) ) {
+            } else if ( typeof req.query === typeof {} && "Username" in req.query && typeof req.query["Username"] === "string" ) {
 
                 const pool = await sql.connect(config);
 
                 const request = pool.request();
 
-                sql_response = await request.input("Organisation", sql.NVarChar, req.query["Organisation"])
-                                            .input("Username", sql.NVarChar, req.query["Username"])
-                                            .query("SELECT t1.Password, t1.Email, t2.Name as OrganisationName, t1.Username, t1.RefreshToken as RefreshToken FROM dbo.Accounts as t1 INNER JOIN dbo.Organisations as t2 ON t1.OrganisationID = t2.OrganisationID WHERE t1.Username=@Username AND t2.Name=@Organisation");
+                sql_response = await request.input("Username", sql.NVarChar, req.query["Username"])
+                                            .query("SELECT t1.Password, t1.Email, t1.Username, t1.RefreshToken FROM proj09.Accounts as t1 WHERE t1.Username=@Username");
 
                 pool.close();
 
             } else {
-
+                
                 return {status: 400};
 
             }
@@ -182,7 +181,7 @@ async function getSignInInfo( req ) {
 
         // Non-checkable errors are possible, testing will mostly not verify the full extent this catch statement.
 
-        // console.error(err);
+        console.error(err);
         return {status: 500};
         
     }
@@ -207,7 +206,7 @@ async function addNewRefreshTokenToDB ( email, refreshToken ) {
 
         sql_response = await request.input("Email", sql.NVarChar, email)
                                     .input("RefreshToken", sql.NVarChar, refreshToken)
-                                    .query("UPDATE dbo.Accounts SET RefreshToken=@RefreshToken WHERE Email=@Email");
+                                    .query("UPDATE proj09.Accounts SET RefreshToken=@RefreshToken WHERE Email=@Email");
 
         pool.close();
 
