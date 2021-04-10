@@ -1,13 +1,16 @@
 {
 	"folders": [
 		{
-			"path": "LeafService"
-		},
-		{
 			"path": "AuthenticationService"
 		},
 		{
+			"path": "LeafService"
+		},
+		{
 			"path": "LoginService"
+		},
+		{
+			"path": "NotificationService"
 		},
 		{
 			"path": "WebAppService"
@@ -28,7 +31,8 @@
 					"Attach to LeafService",
 					"Attach to AuthenticationService",
 					"Attach to LoginService",
-					"Attach to WebAppService"
+					"Attach to WebAppService",
+					"Attach to NotificationService"
 				]
 			}
 		]
