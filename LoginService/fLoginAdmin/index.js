@@ -66,7 +66,7 @@ async function Login( req ) {
 
                         } else {
 
-                            // console.log(5);
+                            // context.log(5);
                             return {status: getAccessToken.status};
 
                         }
@@ -75,7 +75,7 @@ async function Login( req ) {
 
                     } else {
 
-                        // console.log(4);
+                        // context.log(4);
                         return { status: getRefreshToken.status};
 
                     }
@@ -89,20 +89,21 @@ async function Login( req ) {
 
             } else {
 
-                console.log(2);
+                // context.log(2);
                 return {status: 400};
 
             }
 
         } else {
 
-            console.log(1);
+            // context.log(1);
             return {status: 400};
 
         }
 
     } else {
 
+        // context.log(0)
         return {status: signInInfo.status};
 
     }
@@ -181,7 +182,7 @@ async function getSignInInfo( req ) {
 
         // Non-checkable errors are possible, testing will mostly not verify the full extent this catch statement.
 
-        console.error(err);
+        // context.log(err);
         return {status: 500};
         
     }
@@ -212,7 +213,7 @@ async function addNewRefreshTokenToDB ( email, refreshToken ) {
 
     } catch (err) {
 
-        console.log(err);
+        // context.log(err);
 
     }
 
@@ -251,7 +252,6 @@ async function generateRefreshToken( payload ) {
 
     } catch (err) {
 
-        // console.log(err);
         return { status: 500 }
 
     }
@@ -292,7 +292,6 @@ async function generateAccessToken( refreshToken ) {
 
     } catch (err) {
 
-        // console.log(err);
         return { status: 500 }
 
     }
