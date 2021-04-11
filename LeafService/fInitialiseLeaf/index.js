@@ -148,7 +148,7 @@ async function registerLeafInDB(ComputerName, LeafToken, OrganisationEmail) {
             }
         ]
 
-        sql_results = await sql.query("INSERT INTO Leaf (ComputerName, AssignedName, LeafToken, OrganisationID) SELECT @ComputerName, @ComputerName, @LeafToken, t1.OrganisationID FROM Organisation as t1 WHERE t1.Email = @OrganisationEmail", inputs);
+        sql_results = await sql.query("INSERT INTO proj09.Leaf (ComputerName, AssignedName, LeafToken, OrganisationID) SELECT @ComputerName, @ComputerName, @LeafToken, t1.OrganisationID FROM proj09.Organisation as t1 WHERE t1.Email = @OrganisationEmail", inputs);
 
         return sql_results;
     
