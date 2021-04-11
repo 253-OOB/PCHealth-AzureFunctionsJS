@@ -22,8 +22,8 @@ const sqlconfig = {
     password: process.env.SQL_PASS,
     database: process.env.SQL_DATABASE,
     options: {
-        encrypt: (process.env.SQL_ENCRYPT === true),
-        trustedConnection: !(process.env.SQL_ENCRYPT === true),
+        encrypt: (process.env.SQL_ENCRYPT === "true"),
+        trustedConnection: !(process.env.SQL_ENCRYPT === "true"),
         enableArithAbort: true
     }
 }
