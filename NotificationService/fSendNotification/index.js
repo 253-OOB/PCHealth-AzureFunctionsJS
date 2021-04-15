@@ -15,7 +15,7 @@ module.exports = async function (context, req) {
             const communicationMethodPresent = ("CommunicationMethod" in req.body) && (typeof (req.body["CommunicationMethod"] === "string"));
 
             const timeStampAsDateStr = new Date(req.body["TimeStamp"] * 1000).toISOString();
-            
+            console.log("1");
             if(leafIDPresent 
                 && organisationIDPresent 
                 && titlePresent 
@@ -23,8 +23,8 @@ module.exports = async function (context, req) {
                 && contentPresent 
                 && causingValuePresent 
                 && communicationMethodPresent) {
-            
-                    dbInsertOperation = insertNotificationInDB(
+                    console.log("2");
+                    dbInsertOperation = await insertNotificationInDB(
                                                             req.body["LeafID"], 
                                                             req.body["OrganisationID"], 
                                                             req.body["Title"], 
@@ -35,6 +35,7 @@ module.exports = async function (context, req) {
                                                             );
                 
                     console.log(dbInsertOperation.status);
+                    console.log("3");
                 
             } else {
             
