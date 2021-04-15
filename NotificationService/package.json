@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "dotenv": "^8.2.0",
-    "twilio": "^3.59.0"
+    "twilio": "^3.59.0",
+    "mssql": "^6.3.1"
   }
 }
