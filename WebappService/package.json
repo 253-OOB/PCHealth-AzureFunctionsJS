@@ -9,6 +9,8 @@
   "dependencies": {
     "@azure/storage-blob": "^12.5.0",
     "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mssql": "^6.3.1",
     "node-fetch": "^2.6.1"
   }
 }
