@@ -10,14 +10,14 @@ module.exports.evaluateAuthentication = async (accessToken, refreshToken) => {
 
         let jwtContent = this.verifyAccessToken(accessToken);
 
-        if( jwtContent === 200 ) {
+        if( jwtContent.status === 200 ) {
 
             return {
                 status: 200,
                 payload: jwtContent.payload
             }
 
-        } else if( jwtContent === 401 ) {
+        } else if( jwtContent.status === 401 ) {
 
             if( refreshToken !== null ) {
 
@@ -40,15 +40,11 @@ module.exports.evaluateAuthentication = async (accessToken, refreshToken) => {
                 }
 
             } else {
-
                 return {status: 401};
-
             }
 
         } else {
-
             return {status: jwtContent.status};
-
         }
 
     } else if( refreshToken !== null ) {

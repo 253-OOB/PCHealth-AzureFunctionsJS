@@ -43,14 +43,14 @@ async function createFolder( context, req ) {
         return {status: 400};
     }
 
-    let auth = verifyJwtIdentity( req );
+    let auth = await verifyJwtIdentity( req );
 
     if( auth.status !== 200 ) {
         return {status: auth.status};
     }
 
     let inputs = [
-        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload},
+        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload.payload.payload},
         {name: "FolderName", type: sql.NVarChar, value: req.query.FolderName}
     ];
 
@@ -102,7 +102,7 @@ async function createFolder( context, req ) {
 
             for(let i=0; i<sqlResult.data.length; i++) {
 
-                if( sqlResult.data === auth.payload ) {
+                if( sqlResult.data === auth.payload.payload.payload ) {
                     access = true;
                     break;
                 }
@@ -186,7 +186,7 @@ async function getLeavesAndFolders( req ) {
     }
 
     let inputs = [
-        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload}
+        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload.payload.payload}
     ]
 
     let getFolders = "";
@@ -236,7 +236,7 @@ async function getLeavesAndFolders( req ) {
 
             for(let i=0; i<sqlResult.data.length; i++) {
 
-                if( sqlResult.data === auth.payload ) {
+                if( sqlResult.data === (await auth).payload.payload.payload ) {
                     access = true;
                     break;
                 }

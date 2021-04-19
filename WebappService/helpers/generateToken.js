@@ -9,8 +9,8 @@ module.exports.generateInitialisationToken = async ( payload ) => {
             payload: payload
         }
 
-        const getToken = fetch (
-            "http://localhost:7072/api/fGenerateInitialisationToken", 
+        const getToken = await fetch (
+            process.env.AUTH_URL + "fGenerateInitialisationToken", 
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -48,7 +48,7 @@ module.exports.generateAccessToken = async ( refreshToken ) => {
             "refreshToken": refreshToken
         };
 
-        const getToken = fetch (
+        const getToken = await fetch(
             process.env.AUTH_URL + "fGenerateAccessToken", 
             {
                 method: "POST",
@@ -59,7 +59,7 @@ module.exports.generateAccessToken = async ( refreshToken ) => {
         if( getToken.status == 200 ) {
 
             const accessToken = await getToken.json();
-
+            
             return {
                 status: 200,
                 accessToken: accessToken["token"]

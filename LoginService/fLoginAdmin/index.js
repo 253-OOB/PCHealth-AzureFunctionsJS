@@ -38,7 +38,7 @@ async function Login( req ) {
 
                     if( getRefreshToken.refreshToken == null ) {
 
-                        const payload = data.recordset[0].Username;
+                        const payload = data.recordset[0].Email;
                         getRefreshToken = await generateRefreshToken( payload );
 
                     }

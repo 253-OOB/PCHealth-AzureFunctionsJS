@@ -27,7 +27,7 @@ async function createTag ( req ) {
         return {status: auth.status};
     }
 
-    let OrganisationEmail = auth.payload;
+    let OrganisationEmail = auth.payload.payload.payload;
 
     let tagToInsert = null;
 
@@ -103,7 +103,7 @@ async function deleteTag( req ) {
         return {status: auth.status};
     }
 
-    let OrganisationEmail = auth.payload;
+    let OrganisationEmail = auth.payload.payload.payload;
 
     let tagToDelete = null;
 

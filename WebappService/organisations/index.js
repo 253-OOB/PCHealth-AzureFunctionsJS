@@ -18,15 +18,17 @@ async function getOrganisations(req) {
         return {status: auth.status};
     }
 
-    let Email = auth.payload;
+    let Email = auth.payload.payload.payload;
 
     // Get list of organisations
 
     let inputs = [{name: "Email", type: sql.NVarChar, value: Email}]; 
-    let getOrganisationQueryString = "SELECT OrganisationID, OrganisationName FROM proj09.Accounts_Organisations_V WHERE Email=@Email";
+    let getOrganisationQueryString = "SELECT OrganisationID, OrganisationName FROM proj09.Accounts_Organisations_V WHERE AccountEmail=@Email";
 
     let sqlQuery = await sql.query(getOrganisationQueryString, inputs);
     
+    console.log(sqlQuery)
+
     if( sqlQuery.status == 200 ) {
 
         return {
