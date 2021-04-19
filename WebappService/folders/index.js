@@ -50,7 +50,7 @@ async function createFolder( context, req ) {
     }
 
     let inputs = [
-        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload.payload.payload},
+        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload.payload},
         {name: "FolderName", type: sql.NVarChar, value: req.query.FolderName}
     ];
 
@@ -102,7 +102,7 @@ async function createFolder( context, req ) {
 
             for(let i=0; i<sqlResult.data.length; i++) {
 
-                if( sqlResult.data === auth.payload.payload.payload ) {
+                if( sqlResult.data === auth.payload.payload ) {
                     access = true;
                     break;
                 }
@@ -186,7 +186,7 @@ async function getLeavesAndFolders( req ) {
     }
 
     let inputs = [
-        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload.payload.payload}
+        {name: "AccountEmail", type: sql.NVarChar, value: auth.payload.payload}
     ]
 
     let getFolders = "";
@@ -236,7 +236,7 @@ async function getLeavesAndFolders( req ) {
 
             for(let i=0; i<sqlResult.data.length; i++) {
 
-                if( sqlResult.data === (await auth).payload.payload.payload ) {
+                if( sqlResult.data === (await auth).payload.payload ) {
                     access = true;
                     break;
                 }

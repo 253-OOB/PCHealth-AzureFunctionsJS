@@ -55,6 +55,8 @@ module.exports.query = async ( query_string, inputs ) => {
                 data: sql_response.recordset
             }
         } else {
+
+            console.log(inputs);
             return { status: 500 }
         }
 

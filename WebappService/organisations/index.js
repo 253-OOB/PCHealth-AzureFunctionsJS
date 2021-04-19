@@ -18,7 +18,7 @@ async function getOrganisations(req) {
         return {status: auth.status};
     }
 
-    let Email = auth.payload.payload.payload;
+    let Email = auth.payload.payload;
 
     // Get list of organisations
 
@@ -27,7 +27,7 @@ async function getOrganisations(req) {
 
     let sqlQuery = await sql.query(getOrganisationQueryString, inputs);
     
-    console.log(sqlQuery)
+    console.log(auth)
 
     if( sqlQuery.status == 200 ) {
 

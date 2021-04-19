@@ -31,7 +31,7 @@ module.exports.evaluateAuthentication = async (accessToken, refreshToken) => {
                     return {
                         status: 200,
                         accessToken: accessToken,
-                        payload: payload
+                        payload: payload.payload
                     }
 
 
