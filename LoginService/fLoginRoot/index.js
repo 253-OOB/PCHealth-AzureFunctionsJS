@@ -6,7 +6,7 @@ const fetch = require("node-fetch");
 
 module.exports = async (context, req) => {
 
-    context.res = Login(req);
+    context.res = await Login(req);
 
 }
 
@@ -30,14 +30,12 @@ async function Login( req ) {
 
                     if( getOrganisationToken.status == 200 ) {
 
-                        console.log("Hello");
-            
                         return {
                             status: 200,
                             headers: { "Content-Type": "application/json" },
                             body: {
 
-                                OrganisationToken: getOrganisationToken.organisationToken
+                                OrganisationToken: getOrganisationToken.organisationToken 
 
                             }
                         }  
