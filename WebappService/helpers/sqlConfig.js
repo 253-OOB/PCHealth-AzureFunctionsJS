@@ -42,8 +42,6 @@ module.exports.query = async ( query_string, inputs ) => {
             request.input(inputs[i].name, (inputs[i].type) (), inputs[i].value);
         }
 
-        console.log(query_string);
-
         sql_response = await request.query(query_string);
 
         pool.close();
