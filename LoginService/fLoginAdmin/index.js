@@ -2,7 +2,6 @@
 const sql = require("mssql");
 const bcrypt = require("bcryptjs");
 const fetch = require("node-fetch");
-const jwt = require("jsonwebtoken");
 
 // const dotenv = require("dotenv").config();
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing only
