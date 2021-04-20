@@ -82,8 +82,6 @@ async function getTags( req ) {
 
     let sqlResult = await sql.query(sqlQueryString, inputs);
 
-    console.log(sqlResult);
-
     if(sqlResult.status !== 200) {
         return {status: sqlResult.status};
     }
