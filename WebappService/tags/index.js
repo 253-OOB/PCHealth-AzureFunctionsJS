@@ -8,11 +8,11 @@ module.exports = async function (context, req) {
     console.log("Hello");
 
     if( req.params.operation == "create" ) {
-        context.res = createTag(req);
+        context.res = await createTag(req);
     } else if( req.params.operation == "get" ) {
-        context.res = getTags(req);
+        context.res = await getTags(req);
     } else if ( req.params.operation == "delete" ) {
-        context.res = deleteTag(req);
+        context.res = await deleteTag(req);
     } else {
         context.res = {status: 404};
     }
@@ -81,6 +81,8 @@ async function getTags( req ) {
     sqlQueryString = "SELECT * FROM proj09.Tags WHERE OrganisationID=@OrganisationID";
 
     let sqlResult = await sql.query(sqlQueryString, inputs);
+
+    console.log(sqlResult);
 
     if(sqlResult.status !== 200) {
         return {status: sqlResult.status};
