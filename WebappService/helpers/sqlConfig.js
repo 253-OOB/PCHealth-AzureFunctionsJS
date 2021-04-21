@@ -46,14 +46,13 @@ module.exports.query = async ( query_string, inputs ) => {
 
         pool.close();
 
-        if(sql_response.rowsAffected == 1) {
+        if(sql_response.rowsAffected >= 1) {
             return {
                 status: 200,
                 rows: sql_response.rowsAffected,
                 data: sql_response.recordset
             }
         } else {
-
             console.log(inputs);
             return { status: 500 }
         }
