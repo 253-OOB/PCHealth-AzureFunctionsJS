@@ -13,8 +13,6 @@ function generateRefreshToken( req ) {
 
     try {
 
-        console.log(req)
-
         if ( req.body != null && "payload" in req.body && typeof req.body["payload"] === "string"  ) {
 
             const signParameters = {

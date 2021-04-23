@@ -2,7 +2,6 @@
 const sql = require("mssql");
 const bcrypt = require("bcryptjs");
 const fetch = require("node-fetch");
-const jwt = require("jsonwebtoken");
 
 // const dotenv = require("dotenv").config();
 const dotenv = require("dotenv").config({path:__dirname+'/./../.env'}); // testing only
@@ -38,7 +37,7 @@ async function Login( req ) {
 
                     if( getRefreshToken.refreshToken == null ) {
 
-                        const payload = data.recordset[0].Username;
+                        const payload = data.recordset[0].Email;
                         getRefreshToken = await generateRefreshToken( payload );
 
                     }
