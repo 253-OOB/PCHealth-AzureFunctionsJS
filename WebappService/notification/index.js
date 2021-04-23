@@ -58,13 +58,10 @@ async function createNewNotification( req ) {
 
     let cosmosResult = await queryCosmosDB( "notifications", cosmosQueryString, cosmosInputs );
 
-    console.log(cosmosResult);
-
     if ( cosmosResult.status !== 200 ) {
         return {status: cosmosResult.status};
     }
 
-    console.log("Hello");
     const cosmosClient = initialiseCosmosClient( "notifications" );
 
 
@@ -88,8 +85,6 @@ async function createNewNotification( req ) {
         }
 
     } else {
-
-        console.log(Object.keys(req.body.notification)[0]);
 
         let newNotifications = [];
         let valueFound = false;

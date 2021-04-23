@@ -64,9 +64,7 @@ async function assignTag ( req ) {
         sqlResult = await sql.query(sqlQueryString, inputs);
     
     } catch (err) {
-
-        return {status: 500};
-        
+        return {status: 302};
     }
 
     if (sqlResult.status !== 200) {
