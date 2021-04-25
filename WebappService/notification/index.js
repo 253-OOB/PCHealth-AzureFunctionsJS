@@ -54,7 +54,7 @@ async function createNewNotification( req ) {
     }
 
     let cosmosInputs = [ { name: "@LeafToken", value: sqlQuery.data[0].LeafToken } ];
-    let cosmosQueryString = "SELECT top 1 * FROM c order by c._ts desc";
+    let cosmosQueryString = "SELECT top 1 * FROM c WHERE c.LeafToken=@LeafToken order by c._ts desc";
 
     let cosmosResult = await queryCosmosDB( "notifications", cosmosQueryString, cosmosInputs );
 

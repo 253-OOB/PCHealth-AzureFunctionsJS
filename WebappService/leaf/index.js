@@ -34,9 +34,10 @@ async function getLeaves( req ) {
     let sqlQuery = await sql.query(sqlQueryString, inputs);
     
     if( sqlQuery.status !== 200 ) {
+        
         return {status: sqlQuery.status}
     }
-    
+
     sqlQueryString = "SELECT LeafID, AssignedName, ComputerName, OrganisationID, FolderID FROM proj09.Leaf WHERE OrganisationID=@OrganisationID"
     sqlQuery = await sql.query( sqlQueryString, inputs );
 
@@ -51,11 +52,15 @@ async function getLeaves( req ) {
     sqlQueryString = "SELECT * FROM proj09.LeafTags WHERE LeafID=(SELECT LeafID from proj09.Leaf WHERE OrganisationID=@OrganisationID)"
     sqlQuery = await sql.query( sqlQueryString, inputs );
 
-    if( sqlQuery.status !== 200 ) {
+    if( !(sqlQuery.status === 200 || sqlQuery.status === 404)  ) {
         return {status: sqlQuery.status}
     }
 
-    leaves = assignTagsToLeaves(sqlQuery.data, leaves);
+    if (sqlQuery.status !== 404) {
+        leaves = assignTagsToLeaves(sqlQuery.data, leaves);
+    } else {
+        leaves = assignTagsToLeaves([], leaves);
+    }
 
     if( "accessToken" in auth ) {
 

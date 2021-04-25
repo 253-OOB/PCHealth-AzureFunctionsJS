@@ -54,7 +54,7 @@ module.exports.query = async ( query_string, inputs ) => {
             }
         } else {
             console.log(inputs);
-            return { status: 500 }
+            return { status: 404 }
         }
 
     } catch (err) {

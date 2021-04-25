@@ -30,8 +30,6 @@ const sqlconfig = {
 
 module.exports.query = async ( query_string, inputs ) => {
 
-    let sql_response = undefined;
-
     try {
         
         const pool = await sql.connect(sqlconfig);
@@ -42,15 +40,16 @@ module.exports.query = async ( query_string, inputs ) => {
             request.input(inputs[i].name, (inputs[i].type) (), inputs[i].value);
         }
 
-        sql_response = await request.query(query_string);
-
+        let sql_response = await request.query(query_string);
+        
         pool.close();
 
-        if(sql_response.rowsAffected == 1) {
-            return {status: 200}
-        } else {
-            return { status: 500 }
+        return {
+            status: 200,
+            rows: sql_response.rowsAffected,
+            data: sql_response.recordset
         }
+    
 
     } catch (err) {
 

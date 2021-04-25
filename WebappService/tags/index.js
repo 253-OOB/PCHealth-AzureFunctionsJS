@@ -13,7 +13,9 @@ module.exports = async function (context, req) {
         context.res = await deleteTag(req);
     } else if ( req.params.operation == "assign" ) {
         context.res = await assignTag(req);
-    }   else {
+    } else if ( req.params.operation == "unassign" ) {
+        context.res = await unassignTag(req);
+    } else {
         context.res = {status: 404};
     }
 
@@ -67,6 +69,76 @@ async function assignTag ( req ) {
         return {status: 302};
     }
 
+    if (sqlResult.status !== 200) {
+        return {status: sqlResult.status};
+    }
+
+    if( "accessToken" in auth ) {
+        
+        return {
+            status: 200,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: {
+                AccessToken: auth.accessToken
+            }
+        };
+    
+    } else {
+
+        return {
+            status: 200
+        };
+
+    }
+
+}
+
+async function unassignTag ( req ) {
+
+    // ?TagID=x&LeafID
+
+    let auth = await verifyAccountJwtIdentity( req );
+
+    if( auth.status !== 200 ) {
+        return {status: auth.status};
+    }
+
+    let Email = auth.payload.payload;
+
+    if( !("TagID" in req.query && "LeafID" in req.query) ) {
+        return {status: 400};
+    }
+
+    let inputs = [
+
+        {name: "AccountEmail", type: sql.NVarChar, value: Email},
+        {name: "TagID", type: sql.Int, value: parseInt(req.query.TagID)},
+        {name: "LeafID", type: sql.Int, value: parseInt(req.query.LeafID)}
+
+    ]
+
+    let sqlQueryString = `
+        SELECT AccountID FROM proj09.Accounts_Organisations_V as t1 
+            inner join proj09.Leaf as t2 on t1.OrganisationID = t2.OrganisationID  
+                WHERE t1.AccountEmail=@AccountEmail AND t2.LeafID=@LeafID
+    `;
+    let sqlResult = await sql.query(sqlQueryString, inputs);
+
+    if (sqlResult.status !== 200) {
+        return {status: sqlResult.status};
+    }
+
+    if (sqlResult.data.length !== 1) {
+        return { status: 403 };
+    }
+
+
+    sqlQueryString = "DELETE FROM proj09.LeafTags WHERE LeafID=@LeafID AND TagID=@TagID"
+    sqlResult = await sql.query(sqlQueryString, inputs);
+    
+    console.log(sqlResult);
     if (sqlResult.status !== 200) {
         return {status: sqlResult.status};
     }
@@ -178,22 +250,18 @@ async function deleteTag( req ) {
         return {status: auth.status};
     }
 
-    let OrganisationEmail = auth.payload.payload;
+    let OrganisationEmail = auth.payload;
 
-    let tagToDelete = null;
-
-    if( "Tag" in req.query ) {
-        tagToDelete = req.query.Tag;
-    } else {
+    if( !("Tag" in req.query) ) {
         return {status: 400};
     }
 
     let inputs = [
         {name: "OrganisationEmail", type: sql.NVarChar, value: OrganisationEmail},
-        {name: "TagName", type: sql.NVarChar, value: tagToDelete}
+        {name: "TagName", type: sql.NVarChar, value: req.query.Tag}
     ];
 
-    sqlQueryString = "DELETE FROM proj09.Tags WHERE TagName=@TagName AND OrganisationEmail=(SELECT OrganisationID FROM proj09.Organisation WHERE Email=@OrganisationEmail)";
+    sqlQueryString = "DELETE FROM proj09.Tags WHERE TagName=@TagName AND OrganisationID=(SELECT OrganisationID FROM proj09.Organisation WHERE Email=@OrganisationEmail)";
 
     let sqlResult = await sql.query(sqlQueryString, inputs);
 

@@ -126,39 +126,33 @@ async function generateRefreshToken( payload ) {
 
 async function registerLeafInDB(ComputerName, LeafToken, OrganisationEmail) {
 
-    try {
 
-        console.log("HERE");
+    inputs = [
+        { name: "ComputerName", type: sql.NVarChar, value: ComputerName },
+        { name: "LeafToken", type: sql.NVarChar, value: LeafToken },
+        { name: "OrganisationEmail", type: sql.NVarChar, value: OrganisationEmail }
+    ]
 
-        inputs = [
-            {
-                name: "ComputerName",
-                type: sql.NVarChar,
-                value: ComputerName
-            },
-            {
-                name: "LeafToken",
-                type: sql.NVarChar,
-                value: LeafToken
-            },
-            {
-                name: "OrganisationEmail",
-                type: sql.NVarChar,
-                value: OrganisationEmail
-            }
-        ]
+    let sql_results = await sql.query("SELECT * FROM proj09.Leaf WHERE LeafToken=@LeafToken", inputs);
 
-        sql_results = await sql.query("INSERT INTO proj09.Leaf (ComputerName, AssignedName, LeafToken, OrganisationID) SELECT @ComputerName, @ComputerName, @LeafToken, t1.OrganisationID FROM proj09.Organisation as t1 WHERE t1.Email = @OrganisationEmail", inputs);
-
-        return sql_results;
-    
-    } catch (error) {
-
-        console.log(error);
-        return {status: 500}
-
+    if (sql_results.status !== 200) {
+        return {status: sql_results.status};
     }
+
+    if (sql_results.status === 200 && sql_results.data.length !== 0) {
+        return {status: 403};
+    }
+
+    sql_results = await sql.query("INSERT INTO proj09.Leaf (ComputerName, AssignedName, LeafToken, OrganisationID) SELECT @ComputerName, @ComputerName, @LeafToken, t1.OrganisationID FROM proj09.Organisation as t1 WHERE t1.Email = @OrganisationEmail", inputs);
+
+    if (sql_results.status !== 200) {
+        return {status: sql_results.status};
+    }
+
+    return {status: 200};
 
 
 }
+
+
 
