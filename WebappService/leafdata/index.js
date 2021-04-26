@@ -46,7 +46,7 @@ async function getLeafData( req ) {
 
     inputs.push({name: "Min", type: sql.Int, value: req.query.Page});
 
-    sqlQueryString = "SELECT LeafID, LeafToken FROM proj09.Leaf WHERE OrganisationID=@OrganisationID";
+    sqlQueryString = "SELECT LeafID, ComputerName, LeafToken FROM proj09.Leaf WHERE OrganisationID=@OrganisationID";
 
     sqlQuery = await sql.query( sqlQueryString, inputs );
 
